@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Report</title>
+</head>
+
+<body>
+
+<h1>UX Report</h1>
+
+<p>
+<strong>URL:</strong> {{ url }}
+</p>
+
+<h2>Screenshot</h2>
+
+<img
+    src="/{{ screenshot }}"
+    width="900"
+>
+
+<hr>
+
+<h2>Scores</h2>
+
+<ul>
+    <li>Overall: {{ report.overall }}</li>
+    <li>Performance: {{ report.performance }}</li>
+    <li>Accessibility: {{ report.accessibility }}</li>
+</ul>
+
+<h2>AI Comment</h2>
+
+<p>{{ report.comment }}</p>
+
+<a href="/">Analyze another website</a>
+
+</body>
+
+</html>
