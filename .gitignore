@@ -1,0 +1,13 @@
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Generated screenshots
+screenshots/
+
+# Virtual environments
+.venv/
+venv/
+
+# Environment variables
+.env
