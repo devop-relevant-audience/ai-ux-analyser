@@ -1,13 +1,17 @@
+import os
+
 from fastapi import FastAPI, Request, Form
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
-from capture import capture_screenshot
+from capture import capture_screenshots
 
 app = FastAPI()
 
 templates = Jinja2Templates(directory="templates")
+
+os.makedirs("screenshots", exist_ok=True)
 
 app.mount("/screenshots", StaticFiles(directory="screenshots"), name="screenshots")
 
@@ -23,7 +27,7 @@ def home(request: Request):
 
 @app.post("/analyze", response_class=HTMLResponse)
 def analyze(request: Request, url: str = Form(...)):
-    screenshot = capture_screenshot(url)
+    screenshots = capture_screenshots(url)
 
     report = {
         "overall": 100,
@@ -38,7 +42,7 @@ def analyze(request: Request, url: str = Form(...)):
         context={
             "request": request,
             "url": url,
-            "screenshot": screenshot,
+            "screenshots": screenshots,
             "report": report,
         },
     )
