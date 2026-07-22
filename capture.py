@@ -18,10 +18,10 @@ def dismiss_cookie_banner(page):
     for text in buttons:
         try:
             page.get_by_role(
-                "button", 
+                "button",
                 name=text,
                 exact=True
-            ).click(timeout=1000)
+            ).first.click(timeout=1000)
 
             print(f"Clicked cookie button: {text}")
             return
@@ -46,6 +46,7 @@ def scroll_page(page):
     page.evaluate("window.scrollTo(0, 0)")
     page.wait_for_timeout(1500)
 
+
 def capture_screenshots(url: str):
     os.makedirs("screenshots", exist_ok=True)
 
@@ -64,17 +65,17 @@ def capture_screenshots(url: str):
             page = browser.new_page(
                 viewport={
                     "width": width,
-                    "height": 900, 
+                    "height": 900,
                 }
             )
 
             page.goto(url, wait_until="domcontentloaded")
 
             try:
-                 page.wait_for_load_state(
-                     "networkidle",
-                     timeout=5000
-                 )
+                page.wait_for_load_state(
+                    "networkidle",
+                    timeout=5000
+                )
             except TimeoutError:
                 print("Network never became idle. Continuing...")
 
