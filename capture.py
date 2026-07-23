@@ -33,8 +33,8 @@ def scroll_page(page):
     last_scroll = -1
 
     while True:
-        page.mouse.wheel(0, 400)
-        page.wait_for_timeout(1500)
+        page.mouse.wheel(0, 1000)
+        page.wait_for_timeout(500)
 
         current_scroll = page.evaluate("window.scrollY")
 
@@ -44,7 +44,7 @@ def scroll_page(page):
         last_scroll = current_scroll
 
     page.evaluate("window.scrollTo(0, 0)")
-    page.wait_for_timeout(1500)
+    page.wait_for_timeout(500)
 
 
 def capture_screenshots(url: str):
@@ -74,7 +74,7 @@ def capture_screenshots(url: str):
             try:
                 page.wait_for_load_state(
                     "networkidle",
-                    timeout=5000
+                    timeout=2000
                 )
             except TimeoutError:
                 print("Network never became idle. Continuing...")

@@ -1,11 +1,13 @@
 import os
-
+from capture import capture_screenshots
+from lighthouse import run_lighthouse
+from axe import run_axe
 from fastapi import FastAPI, Request, Form
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
-from capture import capture_screenshots
+
 
 app = FastAPI()
 
@@ -29,12 +31,14 @@ def home(request: Request):
 def analyze(request: Request, url: str = Form(...)):
     screenshots = capture_screenshots(url)
 
+    lighthouse_report = run_lighthouse(url)
+    axe_report = run_axe(url)
+
     report = {
-        "overall": 100,
-        "performance": 95,
-        "accessibility": 90,
-        "comment": "This is a fake report for M0."
+        "lighthouse": lighthouse_report,
+        "axe": axe_report
     }
+
 
     return templates.TemplateResponse(
         request=request,

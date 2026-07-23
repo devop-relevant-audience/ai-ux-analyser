@@ -61,19 +61,48 @@
 
 <hr>
 
-<h2>Scores</h2>
+<h2>Lighthouse Report</h2>
 
 <ul>
-    <li>Overall: {{ report.overall }}</li>
-    <li>Performance: {{ report.performance }}</li>
-    <li>Accessibility: {{ report.accessibility }}</li>
+    <li>Performance Score: {{ report.lighthouse.performance_score }}</li>
+    <li>Accessibility Score: {{ report.lighthouse.accessibility_score }}</li>
+    <li>Best Practices Score: {{ report.lighthouse.best_practices_score }}</li>
+    <li>SEO Score: {{ report.lighthouse.seo_score }}</li>
+    <li>First Contentful Paint (FCP): {{ report.lighthouse.fcp }} ms</li>
+    <li>Largest Contentful Paint (LCP): {{ report.lighthouse.lcp }} ms</li>
+    <li>Speed Index: {{ report.lighthouse.speed_index }}</li>
+    <li>Total Blocking Time (TBT): {{ report.lighthouse.tbt }} ms</li>
+    <li>Cumulative Layout Shift (CLS): {{ report.lighthouse.cls }}</li>
 </ul>
 
-<h2>AI Comment</h2>
+<h2>Accessibility Report (axe)</h2>
 
-<p>{{ report.comment }}</p>
+<p>
+    <strong>Total Violations:</strong>
+    {{ report.axe.violations_count }}
+</p>
+
+{% if report.axe.violations_count > 0 %}
+<h3>Violations</h3>
+
+<ul>
+    {% for violation in report.axe.violations %}
+    <li>
+        <strong>{{ violation.id }}</strong><br>
+        Impact: {{ violation.impact }}<br>
+        Description: {{ violation.description }}<br>
+        Help: {{ violation.help }}<br>
+        Occurrences: {{ violation.occurrences }}
+    </li>
+    <br>
+    {% endfor %}
+</ul>
+{% else %}
+<p>No accessibility violations found.</p>
+{% endif %}
 
 <a href="/">Analyze another website</a>
+<br>
 
 </body>
 
