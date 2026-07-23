@@ -6,7 +6,7 @@ from fastapi import FastAPI, Request, Form
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-
+from normalize import build_report
 
 
 app = FastAPI()
@@ -34,11 +34,7 @@ def analyze(request: Request, url: str = Form(...)):
     lighthouse_report = run_lighthouse(url)
     axe_report = run_axe(url)
 
-    report = {
-        "lighthouse": lighthouse_report,
-        "axe": axe_report
-    }
-
+    report = build_report(lighthouse_report, axe_report)
 
     return templates.TemplateResponse(
         request=request,

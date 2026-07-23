@@ -1,5 +1,6 @@
 import json
 import subprocess
+import platform
 
 def load_report(report_path):
     with open(report_path, "r") as file:
@@ -22,16 +23,21 @@ def parse_report(report):
 
 
 def run_lighthouse(url):
-    command = (
-        f'lighthouse "{url}" '
-        '--output=json '
-        '--output-path=lighthouse-report.json '
-        '--quiet'
+    lighthouse_cmd = (
+        "lighthouse.cmd" if platform.system() == "Windows"
+        else "lighthouse"
     )
 
     subprocess.run(
-        ["powershell", "-Command", command],
-        check=True
+        [
+            lighthouse_cmd,
+            url,
+            "--output=json",
+            "--output-path=lighthouse-report.json",
+            "--quiet",
+            "--chrome-flags=--headless --no-sandbox",
+        ],
+        check=True,
     )
 
     report = load_report("lighthouse-report.json")
