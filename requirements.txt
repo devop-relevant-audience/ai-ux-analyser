@@ -4,3 +4,5 @@ jinja2
 python-multipart
 playwright
 axe-playwright-python
+sqlmodel
+psycopg[binary]
