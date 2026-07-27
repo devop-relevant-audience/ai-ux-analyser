@@ -6,3 +6,4 @@ playwright
 axe-playwright-python
 sqlmodel
 psycopg[binary]
+python-dotenv
