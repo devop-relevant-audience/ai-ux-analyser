@@ -49,7 +49,7 @@ def scroll_page(page):
 
 
 def capture_screenshots(url: str):
-    os.makedirs("screenshots", exist_ok=True)
+    os.makedirs("static/screenshots", exist_ok=True)
 
     viewports = {
         "mobile": 375,
@@ -88,7 +88,7 @@ def capture_screenshots(url: str):
 
             scroll_page(page)
 
-            screenshot_path = f"screenshots/{timestamp}_{name}.png"
+            screenshot_path = f"static/screenshots/{timestamp}_{name}.png"
 
             page.screenshot(
                 path=screenshot_path,

@@ -1,0 +1,132 @@
+{
+  "overall": {
+    "score": 4.3,
+    "summary": "The webpage demonstrates a strong visual hierarchy, clear navigation, and a consistent visual design. Lighthouse metrics indicate good overall page quality and performance, while Axe identifies several technical accessibility issues that should be addressed.",
+    "strengths": [
+      "Clear visual hierarchy",
+      "Consistent design language",
+      "Intuitive navigation",
+      "Good overall page performance"
+    ],
+    "issues": [
+      "Several technical accessibility violations identified by Axe",
+      "Some navigation labels could be more descriptive"
+    ]
+  },
+
+  "dimensions": {
+    "visual_hierarchy": {
+      "score": 5,
+      "summary": "Excellent visual hierarchy with clear emphasis on important content.",
+      "strengths": [
+        "Prominent page heading",
+        "Strong contrast between sections",
+        "Primary call-to-action is immediately noticeable",
+        "Consistent spacing and alignment"
+      ],
+      "issues": [
+        "Secondary content could receive slightly more visual emphasis"
+      ]
+    },
+
+    "navigation": {
+      "score": 4,
+      "summary": "Navigation is intuitive and easy to identify.",
+      "strengths": [
+        "Navigation bar is clearly visible",
+        "Navigation items are easy to understand",
+        "Buttons are recognizable"
+      ],
+      "issues": [
+        "Some navigation labels could be more descriptive"
+      ]
+    },
+
+    "aesthetic_design": {
+      "score": 5,
+      "summary": "The interface is clean, visually balanced, and free from unnecessary distractions.",
+      "strengths": [
+        "Minimal visual clutter",
+        "Effective use of whitespace",
+        "Balanced composition",
+        "Consistent visual style"
+      ],
+      "issues": []
+    },
+
+    "consistency_and_standards": {
+      "score": 5,
+      "summary": "Interface elements follow a consistent design language throughout the page.",
+      "strengths": [
+        "Consistent button styling",
+        "Consistent typography",
+        "Consistent iconography",
+        "Uniform spacing throughout the interface"
+      ],
+      "issues": []
+    },
+
+    "clarity_and_familiarity": {
+      "score": 4,
+      "summary": "Content is generally clear and understandable, using familiar language and recognizable interface elements.",
+      "strengths": [
+        "Simple and understandable language",
+        "Clearly labelled buttons",
+        "Recognizable icons",
+        "Logical content organization"
+      ],
+      "issues": [
+        "Some terminology may not be familiar to first-time users"
+      ]
+    },
+
+    "accessibility": {
+      "score": 3,
+      "summary": "Visual accessibility is generally good, although several technical accessibility issues were identified through Axe.",
+
+      "visual_accessibility": {
+        "summary": "Interactive elements are generally easy to identify, although some text lacks sufficient visual contrast.",
+        "strengths": [
+          "Readable font sizes",
+          "Interactive elements are visually identifiable"
+        ],
+        "issues": [
+          "Some text has insufficient visual contrast"
+        ]
+      },
+
+      "technical_accessibility": {
+        "summary": "Axe detected several accessibility violations affecting images, color contrast, and heading structure.",
+        "axe_summary": {
+          "violations": 3,
+          "passes": 47,
+          "incomplete": 2
+        },
+        "strengths": [
+          "Most accessibility checks passed successfully",
+          "Many interface elements follow semantic HTML practices"
+        ],
+        "issues": [
+          "Images missing alternative text",
+          "Insufficient color contrast",
+          "Heading hierarchy skips levels"
+        ]
+      }
+    }
+  },
+
+  "recommendations": [
+    {
+      "category": "Accessibility",
+      "recommendation": "Add alternative text to informative images to improve screen reader support."
+    },
+    {
+      "category": "Accessibility",
+      "recommendation": "Increase color contrast between foreground and background elements to meet accessibility guidelines."
+    },
+    {
+      "category": "Navigation",
+      "recommendation": "Improve the wording of navigation labels to make their purpose clearer for first-time users."
+    }
+  ]
+}

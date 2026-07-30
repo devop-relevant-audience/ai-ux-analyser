@@ -17,9 +17,7 @@ create_db_and_tables()
 
 templates = Jinja2Templates(directory="templates")
 
-os.makedirs("screenshots", exist_ok=True)
-
-app.mount("/screenshots", StaticFiles(directory="screenshots"), name="screenshots")
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 
 @app.get("/", response_class=HTMLResponse)
