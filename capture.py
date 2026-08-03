@@ -2,6 +2,7 @@ from playwright.sync_api import sync_playwright, TimeoutError
 from datetime import datetime
 import os
 
+
 def dismiss_cookie_banner(page):
     buttons = [
         "Accept",
@@ -18,11 +19,7 @@ def dismiss_cookie_banner(page):
 
     for text in buttons:
         try:
-            page.get_by_role(
-                "button",
-                name=text,
-                exact=True
-            ).first.click(timeout=1000)
+            page.get_by_role("button", name=text, exact=True).first.click(timeout=1000)
 
             print(f"Clicked cookie button: {text}")
             return
@@ -75,10 +72,7 @@ def capture_screenshots(url: str):
             page.goto(url, wait_until="domcontentloaded")
 
             try:
-                page.wait_for_load_state(
-                    "networkidle",
-                    timeout=2000
-                )
+                page.wait_for_load_state("networkidle", timeout=2000)
             except TimeoutError:
                 print("Network never became idle. Continuing...")
 
@@ -90,10 +84,7 @@ def capture_screenshots(url: str):
 
             screenshot_path = f"static/screenshots/{timestamp}_{name}.png"
 
-            page.screenshot(
-                path=screenshot_path,
-                full_page=True
-            )
+            page.screenshot(path=screenshot_path, full_page=True)
 
             screenshots[name] = screenshot_path
 
@@ -102,4 +93,3 @@ def capture_screenshots(url: str):
         browser.close()
 
     return screenshots
-

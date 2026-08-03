@@ -1,6 +1,5 @@
 {
   "overall": {
-    "score": 4.3,
     "summary": "The webpage demonstrates a strong visual hierarchy, clear navigation, and a consistent visual design. Lighthouse metrics indicate good overall page quality and performance, while Axe identifies several technical accessibility issues that should be addressed.",
     "strengths": [
       "Clear visual hierarchy",
@@ -13,7 +12,6 @@
       "Some navigation labels could be more descriptive"
     ]
   },
-
   "dimensions": {
     "visual_hierarchy": {
       "score": 5,
@@ -28,7 +26,6 @@
         "Secondary content could receive slightly more visual emphasis"
       ]
     },
-
     "navigation": {
       "score": 4,
       "summary": "Navigation is intuitive and easy to identify.",
@@ -41,7 +38,6 @@
         "Some navigation labels could be more descriptive"
       ]
     },
-
     "aesthetic_design": {
       "score": 5,
       "summary": "The interface is clean, visually balanced, and free from unnecessary distractions.",
@@ -53,7 +49,6 @@
       ],
       "issues": []
     },
-
     "consistency_and_standards": {
       "score": 5,
       "summary": "Interface elements follow a consistent design language throughout the page.",
@@ -65,7 +60,6 @@
       ],
       "issues": []
     },
-
     "clarity_and_familiarity": {
       "score": 4,
       "summary": "Content is generally clear and understandable, using familiar language and recognizable interface elements.",
@@ -79,12 +73,11 @@
         "Some terminology may not be familiar to first-time users"
       ]
     },
-
     "accessibility": {
       "score": 3,
       "summary": "Visual accessibility is generally good, although several technical accessibility issues were identified through Axe.",
-
       "visual_accessibility": {
+        "score": 4,
         "summary": "Interactive elements are generally easy to identify, although some text lacks sufficient visual contrast.",
         "strengths": [
           "Readable font sizes",
@@ -94,16 +87,14 @@
           "Some text has insufficient visual contrast"
         ]
       },
-
       "technical_accessibility": {
-        "summary": "Axe detected several accessibility violations affecting images, color contrast, and heading structure.",
+        "score": 3,
+        "summary": "Axe detected three accessibility violations affecting images, color contrast, and heading structure.",
         "axe_summary": {
-          "violations": 3,
-          "passes": 47,
-          "incomplete": 2
+          "violations_count": 3
         },
         "strengths": [
-          "Most accessibility checks passed successfully",
+          "Relatively few technical accessibility violations were identified",
           "Many interface elements follow semantic HTML practices"
         ],
         "issues": [
@@ -114,7 +105,6 @@
       }
     }
   },
-
   "recommendations": [
     {
       "category": "Accessibility",
