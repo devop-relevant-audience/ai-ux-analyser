@@ -5,8 +5,9 @@ __pycache__/
 # Generated screenshots
 screenshots/
 
-# Lighthouse output
+# Reports 
 lighthouse-report.json
+last_response.json
 
 # Virtual environments
 .venv/
@@ -14,3 +15,7 @@ venv/
 
 # Environment variables
 .env
+
+# Test outputs
+tests/Discord/
+

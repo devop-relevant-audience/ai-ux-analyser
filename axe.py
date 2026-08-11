@@ -28,8 +28,14 @@ def run_axe(url):
                 for v in results.response["violations"]
             ],
         }
-
-
+    
 if __name__ == "__main__":
     report = run_axe("https://www.discord.com/")
-    print(report)
+
+    output_path = "tests/Discord/axe.json"
+
+    with open(output_path, "w", encoding="utf-8") as file:
+        import json
+        json.dump(report, file, indent=2)
+
+    print(f"Axe report saved to {output_path}")

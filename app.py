@@ -6,10 +6,10 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from sqlmodel import Session
 
-from ai import generate_ux_report
 from axe import run_axe
 from capture import capture_screenshots
 from database import create_db_and_tables, engine
+from evaluation_ai import generate_ux_report
 from lighthouse import run_lighthouse
 from models import Run
 from normalize import build_report
