@@ -4,13 +4,14 @@ from typing import Any
 from sqlalchemy import JSON
 from sqlmodel import Field, SQLModel
 
-class Run (SQLModel, table=True):
-  id: int | None = Field(default=None, primary_key=True)
 
-  url: str
+class Run(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
 
-  timestamp: datetime = Field(default_factory=datetime.now)
+    url: str
 
-  screenshots: dict[str, Any] = Field(sa_type=JSON)
+    timestamp: datetime = Field(default_factory=datetime.now)
 
-  report: dict[str, Any] = Field(sa_type=JSON)
+    screenshots: dict[str, Any] = Field(sa_type=JSON)
+
+    report: dict[str, Any] = Field(sa_type=JSON)
