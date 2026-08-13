@@ -1,4 +1,5 @@
 from playwright.sync_api import sync_playwright, TimeoutError
+from datetime import datetime
 import os
 
 def dismiss_cookie_banner(page):
@@ -58,6 +59,8 @@ def capture_screenshots(url: str):
 
     screenshots = {}
 
+    timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
 
@@ -85,7 +88,7 @@ def capture_screenshots(url: str):
 
             scroll_page(page)
 
-            screenshot_path = f"screenshots/{name}.png"
+            screenshot_path = f"screenshots/{timestamp}_{name}.png"
 
             page.screenshot(
                 path=screenshot_path,
