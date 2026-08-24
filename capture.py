@@ -1,5 +1,5 @@
-import os
 from datetime import datetime
+from pathlib import Path
 
 from playwright.sync_api import TimeoutError, sync_playwright
 
@@ -47,7 +47,11 @@ def scroll_page(page):
 
 
 def capture_screenshots(url: str):
-    os.makedirs("static/screenshots", exist_ok=True)
+    screenshot_dir = Path("runtime/screenshots")
+    screenshot_dir.parent.mkdir(exist_ok=True)
+
+    for screenshot in screenshot_dir.glob("*.png"):
+        screenshot.unlink()
 
     viewports = {
         "mobile": 375,
@@ -57,7 +61,7 @@ def capture_screenshots(url: str):
 
     screenshots = {}
 
-    timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S-%f")
 
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
@@ -83,11 +87,11 @@ def capture_screenshots(url: str):
 
             scroll_page(page)
 
-            screenshot_path = f"static/screenshots/{timestamp}_{name}.png"
+            screenshot_path = screenshot_dir / f"{timestamp}_{name}.png"
 
             page.screenshot(path=screenshot_path, full_page=True)
 
-            screenshots[name] = screenshot_path
+            screenshots[name] = str(screenshot_path)
 
             page.close()
 

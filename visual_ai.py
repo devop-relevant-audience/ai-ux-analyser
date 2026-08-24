@@ -271,8 +271,9 @@ def call_luna(prompt, screenshots):
     report = VisualEvidence.model_validate_json(response.output_text)
 
 
-    output_path = Path("tests/Discord/luna_observations.json")
-
+    output_path = Path("runtime/luna_observations.json")
+    output_path.parent.mkdir(exist_ok=True)
+    
     output_path.write_text(
         report.model_dump_json(indent=2),
         encoding="utf-8",
@@ -292,17 +293,3 @@ def extract_visual_evidence(screenshots):
     )
 
     return response
-
-
-if __name__ == "__main__":
-    TEST_DIR = Path("tests/Discord")
-
-    screenshots = {
-        "mobile": str(TEST_DIR / "mobile.png"),
-        "tablet": str(TEST_DIR / "tablet.png"),
-        "desktop": str(TEST_DIR / "desktop.png"),
-    }
-
-    result = extract_visual_evidence(screenshots)
-
-    print(result.model_dump_json(indent=2))

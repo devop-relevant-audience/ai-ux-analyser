@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Report</title>
+    <title>AI-Powered UX Analyser</title>
 
     <link rel="stylesheet" href="/static/css/style.css">
 
@@ -10,11 +10,13 @@
 
 <body>
 
-<h1>UX Report</h1>
+<h1>User Experience Report</h1>
 
 <p>
     <strong>URL:</strong> {{ url }}
 </p>
+
+<h2>Visual Evidence</h2>
 
 <div class="screenshots">
 
@@ -41,52 +43,534 @@
 
 </div>
 
+
 <hr>
 
-<h2>Lighthouse Report</h2>
-
-<ul>
-    <li>Performance Score: {{ report.lighthouse.performance_score }}</li>
-    <li>Accessibility Score: {{ report.lighthouse.accessibility_score }}</li>
-    <li>Best Practices Score: {{ report.lighthouse.best_practices_score }}</li>
-    <li>SEO Score: {{ report.lighthouse.seo_score }}</li>
-    <li>First Contentful Paint (FCP): {{ report.lighthouse.fcp }} ms</li>
-    <li>Largest Contentful Paint (LCP): {{ report.lighthouse.lcp }} ms</li>
-    <li>Speed Index: {{ report.lighthouse.speed_index }}</li>
-    <li>Total Blocking Time (TBT): {{ report.lighthouse.tbt }} ms</li>
-    <li>Cumulative Layout Shift (CLS): {{ report.lighthouse.cls }}</li>
-</ul>
-
-<h2>Accessibility Report (axe)</h2>
+<h2>Overall Evaluation</h2>
 
 <p>
-    <strong>Total Violations:</strong>
-    {{ report.axe.violations_count }}
+    <strong>Summary:</strong>
+    {{ report.ai.overall.summary}}
 </p>
 
-{% if report.axe.violations_count > 0 %}
-<h3>Violations</h3>
+<h3>Strengths</h3>
 
 <ul>
-    {% for violation in report.axe.violations %}
-    <li>
-        <strong>{{ violation.id }}</strong><br>
-        Impact: {{ violation.impact }}<br>
-        Description: {{ violation.description }}<br>
-        Help: {{ violation.help }}<br>
-        Occurrences: {{ violation.occurrences }}
-    </li>
-    <br>
+    {% for strength in report.ai.overall.strengths %}
+    <li>{{ strength }}</li>
     {% endfor %}
 </ul>
+
+<h3>Issues</h3>
+
+<ul>
+    {% for issue in report.ai.overall.issues %}
+    <li>{{ issue }}</li>
+    {% endfor %}  
+</ul>
+
+<hr>
+
+<h2>Visual Hierarchy</h2>
+<h3>
+    Score: {{ report.ai.dimensions.visual_hierarchy.score }}/5
+</h3>
+
+<p>
+    {{ report.ai.dimensions.visual_hierarchy.summary }}
+</p>
+
+<h4>Considerations</h4>
+
+<ul>
+    {% for item in report.ai.dimensions.visual_hierarchy.considerations %}
+    <li>{{ item }}</li>
+    {% endfor %}
+</ul>
+
+
+<h4>Strengths</h4>
+
+<ul>
+    {% for item in report.ai.dimensions.visual_hierarchy.strengths %}
+    <li>{{ item }}</li>
+    {% endfor %}
+</ul>
+
+
+<h4>Issues</h4>
+
+<ul>
+    {% for item in report.ai.dimensions.visual_hierarchy.issues %}
+    <li>{{ item }}</li>
+    {% endfor %}
+</ul>
+
+
+<h2>Navigation</h2>
+
+<h3>
+    Score: {{ report.ai.dimensions.navigation.score }}/5
+</h3>
+
+<p>
+    {{ report.ai.dimensions.navigation.summary }}
+</p>
+
+
+<h4>Considerations</h4>
+
+<ul>
+    {% for item in report.ai.dimensions.navigation.considerations %}
+    <li>{{ item }}</li>
+    {% endfor %}
+</ul>
+
+
+<h4>Strengths</h4>
+
+<ul>
+    {% for item in report.ai.dimensions.navigation.strengths %}
+    <li>{{ item }}</li>
+    {% endfor %}
+</ul>
+
+
+<h4>Issues</h4>
+
+<ul>
+    {% for item in report.ai.dimensions.navigation.issues %}
+    <li>{{ item }}</li>
+    {% endfor %}
+</ul>
+
+
+<h2>Aesthetic Design</h2>
+
+<h3>
+    Score: {{ report.ai.dimensions.aesthetic_design.score }}/5
+</h3>
+
+<p>
+    {{ report.ai.dimensions.aesthetic_design.summary }}
+</p>
+
+
+<h4>Considerations</h4>
+
+<ul>
+    {% for item in report.ai.dimensions.aesthetic_design.considerations %}
+    <li>{{ item }}</li>
+    {% endfor %}
+</ul>
+
+
+<h4>Strengths</h4>
+
+<ul>
+    {% for item in report.ai.dimensions.aesthetic_design.strengths %}
+    <li>{{ item }}</li>
+    {% endfor %}
+</ul>
+
+
+<h4>Issues</h4>
+
+<ul>
+    {% for item in report.ai.dimensions.aesthetic_design.issues %}
+    <li>{{ item }}</li>
+    {% endfor %}
+</ul>
+
+
+<h2>Consistency and Standards</h2>
+
+<h3>
+    Score:
+    {{ report.ai.dimensions.consistency_and_standards.score }}/5
+</h3>
+
+<p>
+    {{ report.ai.dimensions.consistency_and_standards.summary }}
+</p>
+
+
+<h4>Considerations</h4>
+
+<ul>
+    {% for item in report.ai.dimensions.consistency_and_standards.considerations %}
+    <li>{{ item }}</li>
+    {% endfor %}
+</ul>
+
+
+<h4>Strengths</h4>
+
+<ul>
+    {% for item in report.ai.dimensions.consistency_and_standards.strengths %}
+    <li>{{ item }}</li>
+    {% endfor %}
+</ul>
+
+
+<h4>Issues</h4>
+
+<ul>
+    {% for item in report.ai.dimensions.consistency_and_standards.issues %}
+    <li>{{ item }}</li>
+    {% endfor %}
+</ul>
+
+
+<h2>CLARITY AND FAMILIARITY</h2>
+
+<h3>
+    Score:
+    {{ report.ai.dimensions.clarity_and_familiarity.score }}/5
+</h3>
+
+<p>
+    {{ report.ai.dimensions.clarity_and_familiarity.summary }}
+</p>
+
+
+<h4>Considerations</h4>
+
+<ul>
+    {% for item in report.ai.dimensions.clarity_and_familiarity.considerations %}
+    <li>{{ item }}</li>
+    {% endfor %}
+</ul>
+
+
+<h4>Strengths</h4>
+
+<ul>
+    {% for item in report.ai.dimensions.clarity_and_familiarity.strengths %}
+    <li>{{ item }}</li>
+    {% endfor %}
+</ul>
+
+
+<h4>Issues</h4>
+
+<ul>
+    {% for item in report.ai.dimensions.clarity_and_familiarity.issues %}
+    <li>{{ item }}</li>
+    {% endfor %}
+</ul>
+
+
+<h2>Accessibility</h2>
+
+<h3>
+    Overall Score:
+    {{ report.ai.dimensions.accessibility.score }}/5
+</h3>
+
+<p>
+    {{ report.ai.dimensions.accessibility.summary }}
+</p>
+
+
+<h3>
+    Visual Accessibility —
+    {{ report.ai.dimensions.accessibility.visual_accessibility.score }}/5
+</h3>
+
+<p>
+    {{ report.ai.dimensions.accessibility.visual_accessibility.summary }}
+</p>
+
+
+<h4>Considerations</h4>
+
+<ul>
+    {% for item in report.ai.dimensions.accessibility.visual_accessibility.considerations %}
+    <li>{{ item }}</li>
+    {% endfor %}
+</ul>
+
+
+<h4>Strengths</h4>
+
+<ul>
+    {% for item in report.ai.dimensions.accessibility.visual_accessibility.strengths %}
+    <li>{{ item }}</li>
+    {% endfor %}
+</ul>
+
+
+<h4>Issues</h4>
+
+<ul>
+    {% for item in report.ai.dimensions.accessibility.visual_accessibility.issues %}
+    <li>{{ item }}</li>
+    {% endfor %}
+</ul>
+
+
+<h3>
+    Technical Accessibility —
+    {{ report.ai.dimensions.accessibility.technical_accessibility.score }}/5
+</h3>
+
+<p>
+    {{ report.ai.dimensions.accessibility.technical_accessibility.summary }}
+</p>
+
+
+<h4>Considerations</h4>
+
+<ul>
+    {% for item in report.ai.dimensions.accessibility.technical_accessibility.considerations %}
+    <li>{{ item }}</li>
+    {% endfor %}
+</ul>
+
+
+<h4>Strengths</h4>
+
+<ul>
+    {% for item in report.ai.dimensions.accessibility.technical_accessibility.strengths %}
+    <li>{{ item }}</li>
+    {% endfor %}
+</ul>
+
+
+<h4>Issues</h4>
+
+<ul>
+    {% for item in report.ai.dimensions.accessibility.technical_accessibility.issues %}
+    <li>{{ item }}</li>
+    {% endfor %}
+</ul>
+
+<h4>Axe Summary</h4>
+
+<ul>
+    <li>
+        Violations:
+        {{ report.axe.summary.violations_count }}
+    </li>
+
+    <li>
+        Passes:
+        {{ report.axe.summary.passes_count }}
+    </li>
+
+    <li>
+        Incomplete:
+        {{ report.axe.summary.incomplete_count }}
+    </li>
+
+    <li>
+        Inapplicable:
+        {{ report.axe.summary.inapplicable_count }}
+    </li>
+</ul>
+
+
+<h4>Detailed Axe Results</h4>
+
+{% if report.axe.violations|length > 0 %}
+
+<h5>Axe Violations</h5>
+
+{% for violation in report.axe.violations %}
+
+<div>
+
+    <strong>Rule:</strong>
+    {{ violation.id }}
+
+    <br>
+
+    <strong>Severity:</strong>
+    {{ violation.impact or "Not specified" }}
+
+    <br>
+
+    <strong>Description:</strong>
+    {{ violation.description }}
+
+    <br>
+
+    <strong>Help:</strong>
+    {{ violation.help }}
+
+    <br>
+
+    <strong>Affected elements:</strong>
+    {{ violation.occurrences }}
+
+    {% if violation.nodes|length > 0 %}
+
+    <h6>Affected Elements</h6>
+
+    <ul>
+
+        {% for node in violation.nodes %}
+
+        <li>
+
+            <strong>Target:</strong>
+            {{ node.target }}
+
+            <br>
+
+            <strong>HTML:</strong>
+            <code>{{ node.html }}</code>
+
+            <br>
+
+            <strong>Failure:</strong>
+            {{ node.failure_summary }}
+
+        </li>
+
+        {% endfor %}
+
+    </ul>
+
+    {% endif %}
+
+</div>
+
+<hr>
+
+{% endfor %}
+
 {% else %}
+
 <p>No accessibility violations found.</p>
+
 {% endif %}
 
-<p>Generated at: {{ report.timestamp }}</p>
+<hr>
 
-<a href="/">Analyze another website</a>
-<br>
+
+<h2>Performance</h2>
+
+<h3>
+    Score:
+    {{ report.ai.dimensions.performance.score }}/5
+</h3>
+
+<p>
+    {{ report.ai.dimensions.performance.summary }}
+</p>
+
+
+<h4>Considerations</h4>
+
+<ul>
+    {% for item in report.ai.dimensions.performance.considerations %}
+    <li>{{ item }}</li>
+    {% endfor %}
+</ul>
+
+<h4>Strengths</h4>
+
+<ul>
+    {% for item in report.ai.dimensions.performance.strengths %}
+    <li>{{ item }}</li>
+    {% endfor %}
+</ul>
+
+
+<h4>Issues</h4>
+
+<ul>
+    {% for item in report.ai.dimensions.performance.issues %}
+    <li>{{ item }}</li>
+    {% endfor %}
+</ul>
+
+<h4>Lighthouse Results</h4>
+
+<h5>Mobile</h5>
+
+<ul>
+    <li>
+        Performance Score:
+        {{ report.lighthouse.mobile.performance_score }}
+    </li>
+
+    <li>
+        FCP:
+        {{ report.lighthouse.mobile.fcp }} s
+    </li>
+
+    <li>
+        LCP:
+        {{ report.lighthouse.mobile.lcp }} s
+    </li>
+
+    <li>
+        Speed Index:
+        {{ report.lighthouse.mobile.speed_index }} s
+    </li>
+
+    <li>
+        TBT:
+        {{ report.lighthouse.mobile.tbt }} ms
+    </li>
+
+    <li>
+        CLS:
+        {{ report.lighthouse.mobile.cls }}
+    </li>
+</ul>
+
+
+<h5>Desktop</h5>
+
+<ul>
+    <li>
+        Performance Score:
+        {{ report.lighthouse.desktop.performance_score }}
+    </li>
+
+    <li>
+        FCP:
+        {{ report.lighthouse.desktop.fcp }} s
+    </li>
+
+    <li>
+        LCP:
+        {{ report.lighthouse.desktop.lcp }} s
+    </li>
+
+    <li>
+        Speed Index:
+        {{ report.lighthouse.desktop.speed_index }} s
+    </li>
+
+    <li>
+        TBT:
+        {{ report.lighthouse.desktop.tbt }} ms
+    </li>
+
+    <li>
+        CLS:
+        {{ report.lighthouse.desktop.cls }}
+    </li>
+</ul>
+
+
+<hr>
+
+
+<p>
+    <strong>Generated at:</strong>
+    {{ report.timestamp }}
+</p>
+
+
+<p>
+    <a href="/">Analyze another website</a>
+</p>
 
 </body>
 

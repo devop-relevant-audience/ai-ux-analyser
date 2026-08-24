@@ -13,6 +13,7 @@ from evaluation_ai import generate_ux_report
 from lighthouse import run_lighthouse
 from models import Run
 from normalize import build_report
+from visual_ai import extract_visual_evidence
 
 app = FastAPI()
 
@@ -22,6 +23,11 @@ templates = Jinja2Templates(directory="templates")
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
+app.mount(
+    "/runtime",
+    StaticFiles(directory="runtime"),
+    name="runtime",
+)
 
 @app.get("/", response_class=HTMLResponse)
 def home(request: Request):
@@ -36,11 +42,13 @@ def home(request: Request):
 def analyze(request: Request, url: str = Form(...)):
     screenshots = capture_screenshots(url)
 
+    visual_evidence = extract_visual_evidence(screenshots)
+
     lighthouse_report = run_lighthouse(url)
     axe_report = run_axe(url)
 
     ai_report = generate_ux_report(
-        screenshots,
+        visual_evidence.visual_observations,
         lighthouse_report,
         axe_report,
     )

@@ -1,6 +1,5 @@
 from pydantic import BaseModel, Field
 
-
 class VisualObservation(BaseModel):
     observation: str
 
