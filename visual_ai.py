@@ -494,11 +494,6 @@ def call_luna(prompt, screenshots):
         temperature=0,
     )
 
-
-    print("\n===== RAW LUNA RESPONSE =====")
-    print(json.dumps(json.loads(response.output_text), indent=2))
-    print("===== END RAW LUNA RESPONSE =====\n")
-
     report = VisualEvidence.model_validate_json(response.output_text)
 
     output_path = Path("runtime/luna_observations.json")

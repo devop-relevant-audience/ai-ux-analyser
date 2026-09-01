@@ -25,7 +25,6 @@ def dismiss_cookie_banner(page):
         try:
             page.get_by_role("button", name=text, exact=True).first.click(timeout=1000)
 
-            print(f"Clicked cookie button: {text}")
             return
         except TimeoutError:
             pass
