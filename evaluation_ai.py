@@ -58,8 +58,32 @@ def build_prompt(
 - Absence of evidence is not evidence of an issue.
 - If a characteristic cannot be evaluated from the supplied evidence, do not treat it as a strength or issue.
 
+# 2. Page Context
 
-# 2. Evidence Sources and Their Roles
+Use the supplied page context to understand the apparent type and purpose
+of the webpage before evaluating the UX dimensions.
+
+Different webpage types may have different primary content, user goals,
+and important actions. Do not assume that every webpage has a conventional
+marketing or purchase CTA.
+
+When relevant to a dimension, consider whether the visual prominence,
+placement, and organization of important content and actions are
+appropriate for the apparent purpose of the webpage.
+
+For example, on a news or media webpage, prominent articles and news
+content may represent the primary user focus. On an e-commerce webpage,
+product discovery, product information, and purchase-related actions may
+be more important.
+
+Page context provides interpretive context only. It does not itself prove
+that an interface has good or poor UX and must not independently justify
+a score.
+
+Evaluate each dimension using the observable evidence and the
+dimension-specific scoring criteria.
+
+# 3. Evidence Sources and Their Roles
 
 Use the evidence source that is most directly relevant to the dimension being evaluated.
 
@@ -71,6 +95,78 @@ Use the evidence source that is most directly relevant to the dimension being ev
 - Treat summary observations as cross-viewport visual evidence.
 - Do not reinterpret a visual observation as a technical accessibility or performance finding.
 - Do not invent visual characteristics that are not present in the observations.
+
+### Advertisements and Secondary Content
+
+When evaluating Aesthetic Design, consider advertisements, promotional
+blocks, banners, overlays, repeated calls to action, and other secondary
+content when they are identified by the visual evidence.
+
+The presence of an advertisement or secondary content does not
+automatically justify a score deduction.
+
+Evaluate its observable impact using:
+
+- Size
+- Repetition
+- Visual prominence
+- Placement
+- Amount of visual space occupied
+- Interruption of the primary content flow
+- Competition with primary content
+- Effect on the ability to identify and scan primary content
+
+Repeated or visually prominent secondary content should receive greater
+consideration than an isolated, low-impact element.
+
+If the visual evidence identifies a large or repeated block but cannot
+reliably determine that it is an advertisement, evaluate its observable
+visual effect without assuming its purpose.
+
+If an element appears to be an advertisement or promotional element but
+cannot be reliably confirmed, do not identify it as an advertisement as a
+fact. Instead, describe the element based on its observable appearance,
+placement, size, repetition, or other visible characteristics, and clearly
+state that its purpose cannot be determined from the available evidence.
+
+An uncertain classification does not prevent the evaluator from
+considering the element's observable visual impact. If the element creates
+a noticeable UX weakness, it may be included as an issue and may contribute
+to a score deduction even when its exact purpose is unknown.
+
+For example, a large or repeated advertisement may:
+
+- Reduce Visual Hierarchy by competing with a primary heading, CTA, or
+  other important content.
+- Reduce Aesthetic Design by increasing visual clutter, visual density, or
+  interrupting the primary content flow.
+
+Do not deduct points for the mere presence of an advertisement or
+secondary element. A deduction must be supported by an observable
+negative impact relevant to the specific dimension being evaluated.
+
+Do not require positive identification of an advertisement before
+considering its contribution to visual clutter.
+
+
+### Screenshot Integrity
+
+- Screenshot integrity observations describe the reliability of the captured screenshots, not the quality of the webpage itself.
+- Use screenshot integrity observations only to determine whether visual evidence is reliable.
+- A reported screenshot or capture artifact must not directly lower any UX dimension score.
+- Do not classify a screenshot artifact as a UX strength or issue.
+- If a screenshot is partially affected but still contains reliable visual evidence, use only the reliable portions when evaluating the UX.
+- If a visual observation is supported by reliable evidence despite a screenshot artifact, it may still be used for scoring.
+- If an apparent issue is visible only within a suspected screenshot artifact and is not independently supported by another evidence source, do not use it to lower the score.
+
+If a screenshot appears incomplete, incorrectly rendered, or affected by a loading/capture artifact, 
+treat the affected visual observation as uncertain. Do not deduct points solely because of an apparent 
+issue that may be caused by the capture process.
+
+When objective evidence is available, use it to support or challenge visual observations. 
+Do not claim that an objective result confirms a specific visual issue unless the objective evidence actually identifies that element.
+
+Clearly distinguish between confirmed issues, visual observations, and uncertain observations caused by possible capture artifacts.
 
 ### Lighthouse
 
@@ -90,7 +186,7 @@ Use the evidence source that is most directly relevant to the dimension being ev
 - Do not use Axe findings to infer visual accessibility characteristics that cannot be observed from the screenshots.
 
 
-# 3. Objective Evidence Rules
+# 4. Objective Evidence Rules
 
 - Treat Lighthouse and Axe findings as objective evidence.
 - Do not alter, estimate, invent, contradict, or reinterpret objective values.
@@ -101,26 +197,30 @@ Use the evidence source that is most directly relevant to the dimension being ev
 - When Lighthouse and Axe report different findings for related accessibility checks, report both accurately rather than assuming one invalidates the other.
 
 
-# 4. Evaluation Process
+# 5. Evaluation Process
 
 For EACH of the seven UX dimensions:
 
 1. Read only the criteria and score guidance relevant to the current dimension.
 2. Identify the supplied evidence relevant to that dimension.
 3. Compare the relevant evidence against every score level defined in the rubric.
-4. Assign the highest score whose criteria are substantially satisfied.
-5. If the evidence falls between two score levels, assign the lower score unless the higher score is clearly and consistently supported.
-6. Generate the summary using only evidence supporting the assigned score.
-7. Identify directly supported strengths.
-8. Identify directly supported issues.
-9. Identify notable neutral considerations when appropriate.
-10. Do not use evidence from another dimension to justify the score.
-11. If a supplied observation directly corresponds to a criterion in the dimension's scoring guidance, explicitly consider it when assigning the score.
+4. Assign a score only after identifying whether any criteria required for the higher score are absent or contradicted by the supplied evidence.
+5. A dimension should not receive 5/5 merely because no major problem is present.
+6. A score of 5 requires the positive criteria for 5/5 to be clearly and consistently supported by evidence.
+7. If a meaningful limitation prevents the highest score from being fully satisfied, assign the next lower score when supported by the rubric.
+8. Do not assume that a generally good interface qualifies for 5/5 when the rubric identifies specific characteristics required for that score.
+9. If the evidence falls between two score levels, assign the lower score unless the higher score is clearly and consistently supported.
+10. Identify directly supported strengths.
+11. Identify directly supported issues.
+12. Identify notable neutral considerations when appropriate.
+13. Do not use evidence from another dimension to justify the score.
+14. If a supplied observation directly corresponds to a criterion in the dimension's scoring guidance, explicitly consider it when assigning the score.
+15. Generate the summary using only evidence supporting the assigned score.
 
 Complete the evaluation independently for all seven dimensions before generating the overall report.
 
 
-# 5. Scoring Rules
+# 6. Scoring Rules
 
 - Every assigned score must be directly supported by the identified evidence.
 - Do not infer evidence that is not explicitly observable or supplied.
@@ -131,7 +231,7 @@ Complete the evaluation independently for all seven dimensions before generating
 - Do not determine a score by simply counting strengths, issues, Axe violations, or Lighthouse metrics.
 
 
-# 6. Accessibility Evaluation
+# 7. Accessibility Evaluation
 
 Accessibility consists of two independent components:
 
@@ -163,7 +263,9 @@ The Axe summary contains four counts:
 - incomplete
 - inapplicable
 
-Use violations and passes as evidence when evaluating Technical Accessibility.
+- Use relevant Axe violations and relevant passing checks as supporting evidence when evaluating Technical Accessibility.
+- Do not use the number or proportion of passes as a direct scoring mechanism.
+- A passing check may support a specific accessibility characteristic, but does not establish that the page is broadly accessible.
 
 Incomplete and inapplicable counts are provided for transparency and reporting context only.
 
@@ -173,7 +275,7 @@ Incomplete and inapplicable counts are provided for transparency and reporting c
 - Do not use incomplete or inapplicable counts to calculate or influence the Technical Accessibility score.
 
 
-# 7. Performance Evaluation
+# 8. Performance Evaluation
 
 - Evaluate Performance using the supplied Lighthouse results for mobile and desktop.
 - Consider the Lighthouse Performance Score together with FCP, LCP, Speed Index, TBT, CLS, and relevant performance audit findings.
@@ -186,7 +288,7 @@ Incomplete and inapplicable counts are provided for transparency and reporting c
 Only describe a Lighthouse metric as a strength when it falls within the "Good" threshold defined in the rubric.
 - Lighthouse metrics that fall under the 'Poor' threshold is considered an issue. 
 
-# 8. Objective Result Summaries
+# 9. Objective Result Summaries
 
 ### Lighthouse Summary
 
@@ -221,12 +323,13 @@ Copy these values exactly as supplied.
 The counts must not be recalculated or used as a simple percentage to determine the Technical Accessibility score.
 
 
-# 9. Considerations
+# 10. Considerations
 
 Considerations are optional pieces of notable, neutral information that are relevant to the UX dimension and useful for the reader.
 
 - A consideration must be directly supported by supplied evidence.
 - A consideration must not be presented as a strength or issue.
+- Add up to three considerations when necessary, relevant, worthy of noting for each dimension.
 - Do not use considerations to introduce weaknesses that should instead be classified as issues.
 - Do not use considerations to avoid classifying a clearly supported issue.
 - Do not simply copy Luna's observations into the final report.
@@ -235,7 +338,9 @@ Considerations are optional pieces of notable, neutral information that are rele
 - Considerations should provide additional context rather than repeat the summary, strengths, or issues.
 - If a supplied observation is relevant but is neither clearly a strength nor issue, consider including it as a consideration.
 - Do not classify an observation as a consideration merely because its impact is uncertain. If the rubric establishes that it is a weakness, classify it as an issue.
-- Do not manufacture considerations to reach the maximum of two.
+- Do not manufacture considerations to reach the maximum of three.
+- When screenshot integrity issues are reported, acknowledge them in the evaluation only when they materially affect the reliability or interpretation of the visual evidence.
+- Do not treat screenshot integrity issues as UX weaknesses or use them to reduce a dimension score.
 
 Example of characteristics worth mentioning as a consideration: 
 1. "The hero artwork is visually prominent alongside the primary hero headline."
@@ -254,7 +359,7 @@ Example:
 "Axe identified [number] passed automated checks, [number] violation types affecting [number] elements, [number] incomplete checks, and [number] inapplicable checks. Incomplete and inapplicable checks were not treated as accessibility failures when determining the Technical Accessibility score."
 
 
-# 10. Strengths and Issues
+# 11. Strengths and Issues
 
 - Strengths must be directly supported by evidence and relevant to the assigned score.
 - Issues must be directly supported by evidence and relevant to the assigned score.
@@ -263,7 +368,7 @@ Example:
 - Do not repeat the same detailed Axe finding in both Accessibility and Technical Accessibility unless necessary.
 - Do not introduce an issue solely because an automated tool reports a finding; consider its relevance, severity, scope, and impact according to the rubric.
 
-# 11. Recommendations
+# 12. Recommendations
 
 - Recommendations must directly address issues identified in the evaluation.
 - Do not introduce new issues through recommendations.
@@ -275,7 +380,7 @@ Example:
 - When an automated finding is technical, explain the recommended user-facing outcome where possible.
 
 
-# 12. Writing Style
+# 13. Writing Style
 
 - Use concise, factual, and objective language.
 - Avoid promotional or unnecessarily descriptive language.
@@ -288,13 +393,13 @@ Example:
 - Preserve important objective information such as severity, occurrence counts, and audit results when relevant.
 
 
-# 13. Overall Score
+# 14. Overall Score
 
 - Do not independently calculate the overall score.
 - The application calculates the overall score from the seven dimension scores after the AI evaluation is complete.
 
 
-# 14. Output Requirements
+# 15. Output Requirements
 
 - Return ONLY a valid JSON object.
 - Do not include markdown.
@@ -304,7 +409,7 @@ Example:
 - Do not add additional fields.
 - Do not rename fields.
 - The JSON must conform exactly to the supplied schema.
-- Each dimension may contain up to two considerations, except Technical Accessibility, which must contain exactly one.
+- Each dimension may contain up to three considerations, except Technical Accessibility, which must contain exactly one.
 - Each dimension may contain up to two strengths and two issues.
 - Do not manufacture content to reach these limits.
 """

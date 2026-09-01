@@ -1,5 +1,3 @@
-from binascii import Incomplete
-
 from pydantic import BaseModel, Field
 
 
@@ -12,7 +10,7 @@ class OverallEvaluation(BaseModel):
 class DimensionEvaluation(BaseModel):
     score: int = Field(ge=1, le=5)
     summary: str
-    considerations: list[str] = Field(default_factory=list, max_length=2)
+    considerations: list[str] = Field(default_factory=list, max_length=3)
     strengths: list[str] = Field(default_factory=list, max_length=2)
     issues: list[str] = Field(default_factory=list, max_length=2)
 
@@ -31,7 +29,7 @@ class AxeSummary(BaseModel):
 class VisualAccessibility(BaseModel):
     score: int = Field(ge=1, le=5)
     summary: str
-    considerations: list[str] = Field(default_factory=list, max_length=2)
+    considerations: list[str] = Field(default_factory=list, max_length=3)
     strengths: list[str] = Field(default_factory=list, max_length=2)
     issues: list[str] = Field(default_factory=list, max_length=2)
 
@@ -39,7 +37,7 @@ class VisualAccessibility(BaseModel):
 class TechnicalAccessibility(BaseModel):
     score: int = Field(ge=1, le=5)
     summary: str
-    considerations: list[str] = Field(default_factory=list, max_length=2)
+    considerations: list[str] = Field(default_factory=list, max_length=3)
     axe_summary: AxeSummary
     strengths: list[str] = Field(default_factory=list, max_length=2)
     issues: list[str] = Field(default_factory=list, max_length=2)
@@ -47,8 +45,9 @@ class TechnicalAccessibility(BaseModel):
 
 class AccessibilityEvaluation(BaseModel):
     score: int = Field(ge=1, le=5)
+    calculated_score: float = Field(ge=1, le=5)
     summary: str
-    considerations: list[str] = Field(default_factory=list, max_length=2)
+    considerations: list[str] = Field(default_factory=list, max_length=3)
     strengths: list[str] = Field(default_factory=list, max_length=2)
     issues: list[str] = Field(default_factory=list, max_length=2)
     visual_accessibility: VisualAccessibility

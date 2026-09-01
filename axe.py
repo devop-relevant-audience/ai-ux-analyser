@@ -1,4 +1,5 @@
 from axe_playwright_python.sync_playwright import Axe
+from openai import timeout
 from playwright.sync_api import sync_playwright
 
 
@@ -41,10 +42,16 @@ def run_axe(url):
         browser = playwright.chromium.launch(headless=True)
         page = browser.new_page()
 
-        page.goto(url, wait_until="load")
+        try:
+            page.goto(url, wait_until="domcontentloaded",
+            timeout=30000,
+            )
+        except TimeoutError:
+            print(f"TimeoutError: {url}")
+
+        page.wait_for_timeout(3000)
 
         results = axe.run(page)
-
         axe_results = results.response
 
         browser.close()
@@ -60,6 +67,7 @@ def run_axe(url):
                 normalize_violation(rule) for rule in axe_results.get("violations", [])
             ],
             "passes": [normalize_pass(rule) for rule in axe_results.get("passes", [])],
+            
             "incomplete": [
                 normalize_violation(rule) for rule in axe_results.get("incomplete", [])
             ],
