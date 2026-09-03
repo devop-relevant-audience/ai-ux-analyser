@@ -7,3 +7,4 @@ axe-playwright-python
 sqlmodel
 psycopg[binary]
 python-dotenv
+openai==2.45.0

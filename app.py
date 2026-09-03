@@ -1,15 +1,18 @@
 import os
-from capture import capture_screenshots
-from lighthouse import run_lighthouse
-from axe import run_axe
-from fastapi import FastAPI, Request, Form
+
+from fastapi import FastAPI, Form, Request
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from normalize import build_report
 from sqlmodel import Session
+
+from ai import generate_ux_report
+from axe import run_axe
+from capture import capture_screenshots
 from database import create_db_and_tables, engine
+from lighthouse import run_lighthouse
 from models import Run
+from normalize import build_report
 
 app = FastAPI()
 
@@ -36,7 +39,18 @@ def analyze(request: Request, url: str = Form(...)):
     lighthouse_report = run_lighthouse(url)
     axe_report = run_axe(url)
 
-    report = build_report(lighthouse_report, axe_report)
+    ai_report = generate_ux_report(
+        screenshots,
+        lighthouse_report,
+        axe_report,
+    )
+
+    report = build_report(
+        lighthouse_report,
+        axe_report,
+        ai_report.model_dump(),
+    )
+    
 
     with Session(engine) as session:
         run = Run(

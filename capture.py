@@ -1,6 +1,7 @@
-from playwright.sync_api import sync_playwright, TimeoutError
-from datetime import datetime
 import os
+from datetime import datetime
+
+from playwright.sync_api import TimeoutError, sync_playwright
 
 
 def dismiss_cookie_banner(page):
