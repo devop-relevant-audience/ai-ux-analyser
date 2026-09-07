@@ -1,6 +1,7 @@
-from playwright.sync_api import sync_playwright, TimeoutError
 from datetime import datetime
-import os
+from pathlib import Path
+
+from playwright.sync_api import TimeoutError, sync_playwright
 
 
 def dismiss_cookie_banner(page):
@@ -15,13 +16,15 @@ def dismiss_cookie_banner(page):
         "OK",
         "Ok",
         "Okay",
+        "Continue as guest",
+        "Browse as a guest",
+        "Continue as a guest",
     ]
 
     for text in buttons:
         try:
             page.get_by_role("button", name=text, exact=True).first.click(timeout=1000)
 
-            print(f"Clicked cookie button: {text}")
             return
         except TimeoutError:
             pass
@@ -41,12 +44,13 @@ def scroll_page(page):
 
         last_scroll = current_scroll
 
-    page.evaluate("window.scrollTo(0, 0)")
-    page.wait_for_timeout(500)
-
 
 def capture_screenshots(url: str):
-    os.makedirs("static/screenshots", exist_ok=True)
+    screenshot_dir = Path("runtime/screenshots")
+    screenshot_dir.parent.mkdir(exist_ok=True)
+
+    for screenshot in screenshot_dir.glob("*.png"):
+        screenshot.unlink()
 
     viewports = {
         "mobile": 375,
@@ -56,7 +60,7 @@ def capture_screenshots(url: str):
 
     screenshots = {}
 
-    timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S-%f")
 
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
@@ -82,11 +86,16 @@ def capture_screenshots(url: str):
 
             scroll_page(page)
 
-            screenshot_path = f"static/screenshots/{timestamp}_{name}.png"
+            page.evaluate("window.scrollTo(0, 0)")
+            page.wait_for_function("window.scrollY === 0")
+                        
+            page.wait_for_timeout(2000)
 
-            page.screenshot(path=screenshot_path, full_page=True)
+            screenshot_path = screenshot_dir / f"{timestamp}_{name}.png"
 
-            screenshots[name] = screenshot_path
+            page.screenshot(path=screenshot_path, full_page=True, animations="disabled",)
+
+            screenshots[name] = str(screenshot_path)
 
             page.close()
 

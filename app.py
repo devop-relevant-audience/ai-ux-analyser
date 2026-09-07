@@ -1,15 +1,19 @@
 import os
-from capture import capture_screenshots
-from lighthouse import run_lighthouse
-from axe import run_axe
-from fastapi import FastAPI, Request, Form
+
+from fastapi import FastAPI, Form, Request
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from normalize import build_report
 from sqlmodel import Session
+
+from axe import run_axe
+from capture import capture_screenshots
 from database import create_db_and_tables, engine
+from evaluation_ai import generate_ux_report
+from lighthouse import run_lighthouse
 from models import Run
+from normalize import build_report
+from visual_ai import extract_visual_evidence
 
 app = FastAPI()
 
@@ -19,6 +23,11 @@ templates = Jinja2Templates(directory="templates")
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
+app.mount(
+    "/runtime",
+    StaticFiles(directory="runtime"),
+    name="runtime",
+)
 
 @app.get("/", response_class=HTMLResponse)
 def home(request: Request):
@@ -33,19 +42,68 @@ def home(request: Request):
 def analyze(request: Request, url: str = Form(...)):
     screenshots = capture_screenshots(url)
 
+    visual_evidence = extract_visual_evidence(screenshots)
+
     lighthouse_report = run_lighthouse(url)
     axe_report = run_axe(url)
 
-    report = build_report(lighthouse_report, axe_report)
+    preliminary_report = build_report(
+        lighthouse_report,
+        axe_report,
+        None,
+    )
 
     with Session(engine) as session:
         run = Run(
             url=url,
             screenshots=screenshots,
-            report=report,
+            report=preliminary_report,
         )
-
         session.add(run)
+        session.commit()
+        session.refresh(run)
+
+    
+    ai_report = generate_ux_report(
+        visual_evidence.visual_observations,
+        lighthouse_report,
+        axe_report,
+    )
+
+    priority_order = {
+        "High":0,
+        "Medium":1,
+        "Low":2,
+    }
+
+    ai_report.overall.recommendations.sort(
+        key=lambda recommendation: priority_order[recommendation.priority]
+    )
+
+    UXdimension_scores = [
+        ai_report.dimensions.visual_hierarchy.score,
+        ai_report.dimensions.navigation.score,
+        ai_report.dimensions.aesthetic_design.score,
+        ai_report.dimensions.consistency_and_standards.score,
+        ai_report.dimensions.clarity_and_familiarity.score,
+        ai_report.dimensions.accessibility.score,
+        ai_report.dimensions.performance.score,
+    ]
+
+    overall_score = sum(UXdimension_scores)/ len(UXdimension_scores)
+
+    report = build_report(
+        lighthouse_report,
+        axe_report,
+        ai_report.model_dump(),
+    )
+    
+    report["ai"]["overall_score"] = overall_score
+
+    with Session(engine) as session:
+        saved_run = session.get(Run, run.id)
+        saved_run.report = report
+        session.add(saved_run)
         session.commit()
 
     return templates.TemplateResponse(
