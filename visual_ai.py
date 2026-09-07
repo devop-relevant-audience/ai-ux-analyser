@@ -390,7 +390,7 @@ Example:
     }}
   }},
 
-     "screenshot_integrity": {{
+    "screenshot_integrity": {{
     "mobile": [],
     "tablet": [],
     "desktop": [],
@@ -462,39 +462,50 @@ def call_luna(prompt, screenshots):
     tablet_image = encode_image(screenshots["tablet"])
     desktop_image = encode_image(screenshots["desktop"])
 
-    response = client.responses.create(
+    response = client.chat.completions.create(
         model="openai/gpt-5.6-luna",
-        input=[
+        messages=[
             {
-                "type": "message",
                 "role": "user",
                 "content": [
                     {
-                        "type": "input_text",
+                        "type": "text",
                         "text": prompt,
                     },
                     {
-                        "type": "input_image",
-                        "image_url": f"data:image/png;base64,{mobile_image}",
-                    },
+                        "type": "image_url",
+                        "image_url": {
+                         "url": f"data:image/png;base64,{mobile_image}"
+                        },
+                      },
                     {
-                        "type": "input_image",
-                        "image_url": f"data:image/png;base64,{tablet_image}",
-                    },
+                        "type": "image_url",
+                        "image_url": {
+                         "url": f"data:image/png;base64,{tablet_image}"
+                        },
+                      }, 
                     {
-                        "type": "input_image",
-                        "image_url": f"data:image/png;base64,{desktop_image}",
+                        "type": "image_url",
+                        "image_url": {
+                         "url": f"data:image/png;base64,{desktop_image}"
                     },
+                  },
                 ],
+              },
+            ],
+            response_format={
+              "type": "json_schema",
+              "json_schema": {
+                  "name": "visual_evidence",
+                  "strict": True,
+                  "schema": VisualEvidence.model_json_schema(),
+              },
             },
-        ],
-        reasoning={
-            "effort": "high",
-        },
-        temperature=0,
-    )
+            seed=29,
+        )
 
-    report = VisualEvidence.model_validate_json(response.output_text)
+
+    report = VisualEvidence.model_validate_json(response.choices[0].message.content)
 
     output_path = Path("runtime/luna_observations.json")
     output_path.parent.mkdir(exist_ok=True)

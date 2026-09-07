@@ -49,9 +49,28 @@
 <h2>Overall Evaluation</h2>
 
 <p>
+    <strong>Overall UX Score:</strong>
+    {{ "%.1f"|format(report.ai.overall_score) }} / 5
+</p>
+
+<p>
     <strong>Summary:</strong>
     {{ report.ai.overall.summary}}
 </p>
+
+<h3>Prioritised Recommendations</h3>
+
+<ul>
+    {% for recommendation in report.ai.overall.recommendations %}
+    <li>
+    <strong>Priority level:</strong>{{ recommendation.priority }}
+    <br>
+    <strong>Issues:</strong> {{recommendation.issue}}
+    <br>
+    <strong>Recommendation:</strong> {{ recommendation.recommendation }}
+    </li>
+    {% endfor %}
+</ul>
 
 <h3>Strengths</h3>
 
@@ -68,6 +87,7 @@
     <li>{{ issue }}</li>
     {% endfor %}  
 </ul>
+
 
 <hr>
 

@@ -47,11 +47,50 @@ def analyze(request: Request, url: str = Form(...)):
     lighthouse_report = run_lighthouse(url)
     axe_report = run_axe(url)
 
+    preliminary_report = build_report(
+        lighthouse_report,
+        axe_report,
+        None,
+    )
+
+    with Session(engine) as session:
+        run = Run(
+            url=url,
+            screenshots=screenshots,
+            report=preliminary_report,
+        )
+        session.add(run)
+        session.commit()
+        session.refresh(run)
+
+    
     ai_report = generate_ux_report(
         visual_evidence.visual_observations,
         lighthouse_report,
         axe_report,
     )
+
+    priority_order = {
+        "High":0,
+        "Medium":1,
+        "Low":2,
+    }
+
+    ai_report.overall.recommendations.sort(
+        key=lambda recommendation: priority_order[recommendation.priority]
+    )
+
+    UXdimension_scores = [
+        ai_report.dimensions.visual_hierarchy.score,
+        ai_report.dimensions.navigation.score,
+        ai_report.dimensions.aesthetic_design.score,
+        ai_report.dimensions.consistency_and_standards.score,
+        ai_report.dimensions.clarity_and_familiarity.score,
+        ai_report.dimensions.accessibility.score,
+        ai_report.dimensions.performance.score,
+    ]
+
+    overall_score = sum(UXdimension_scores)/ len(UXdimension_scores)
 
     report = build_report(
         lighthouse_report,
@@ -59,15 +98,12 @@ def analyze(request: Request, url: str = Form(...)):
         ai_report.model_dump(),
     )
     
+    report["ai"]["overall_score"] = overall_score
 
     with Session(engine) as session:
-        run = Run(
-            url=url,
-            screenshots=screenshots,
-            report=report,
-        )
-
-        session.add(run)
+        saved_run = session.get(Run, run.id)
+        saved_run.report = report
+        session.add(saved_run)
         session.commit()
 
     return templates.TemplateResponse(

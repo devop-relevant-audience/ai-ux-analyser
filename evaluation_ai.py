@@ -4,6 +4,7 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 from openai import OpenAI
+from pydantic import ValidationError
 
 from evaluation_schema import UXEvaluation
 from evidence_schema import EvaluationEvidence
@@ -24,10 +25,7 @@ def build_prompt(
     rubric,
     evidence,
 ):
-    schema = json.dumps(
-        UXEvaluation.model_json_schema(),
-        indent=2,
-    )
+
 
     evidence_json = json.dumps(
         evidence.model_dump(),
@@ -309,20 +307,6 @@ The Lighthouse evidence uses these units:
 
 The lighthouse_summary is an objective display of the supplied evidence and must not independently determine or alter the assigned Performance score.
 
-### Axe Summary
-
-The Technical Accessibility component MUST include the supplied Axe summary containing:
-
-- violations_count
-- passes_count
-- incomplete_count
-- inapplicable_count
-
-Copy these values exactly as supplied.
-
-The counts must not be recalculated or used as a simple percentage to determine the Technical Accessibility score.
-
-
 # 10. Considerations
 
 Considerations are optional pieces of notable, neutral information that are relevant to the UX dimension and useful for the reader.
@@ -408,7 +392,6 @@ Example:
 - Do not omit required fields.
 - Do not add additional fields.
 - Do not rename fields.
-- The JSON must conform exactly to the supplied schema.
 - Each dimension may contain up to three considerations, except Technical Accessibility, which must contain exactly one.
 - Each dimension may contain up to two strengths and two issues.
 - Do not manufacture content to reach these limits.
@@ -456,10 +439,6 @@ explicitly defined in that dimension and its effect is relevant to the observed 
 
 Return ONLY a valid JSON object.
 
-The JSON MUST conform exactly to the following JSON Schema.
-
-{schema}
-
 Do not omit required fields.
 Do not add extra fields.
 Do not rename fields.
@@ -482,35 +461,38 @@ def call_terra(
         base_url="https://openrouter.ai/api/v1",
     )
 
-    response = client.responses.create(
+    response = client.chat.completions.create(
         model="openai/gpt-5.6-terra",
-        input=[
+        messages=[
             {
-                "type": "message",
                 "role": "user",
-                "content": [
-                    {
-                        "type": "input_text",
-                        "text": prompt,
-                    },
-                ],
-            },
+                "content": prompt,
+            }
         ],
-        reasoning={
-            "effort": "high",
+
+        response_format={
+            "type": "json_schema",
+            "json_schema": {
+                "name": "ux_evaluation",
+                "strict": True,
+                "schema": UXEvaluation.model_json_schema(),
+            }
         },
-        temperature=0,
+
+        seed=29
     )
+
+    output_text = response.choices[0].message.content
 
     output_path = Path("runtime/last_response.json")
     output_path.parent.mkdir(exist_ok=True)
 
     output_path.write_text(
-    response.output_text,
-    encoding="utf-8",
-)
+        output_text,
+        encoding="utf-8",
+    )
 
-    return response.output_text
+    return output_text
 
 
 def validate_response(response):
@@ -535,8 +517,18 @@ def generate_ux_report(
         evidence,
     )
 
-    response = call_terra(prompt)
+    for attempt in range(2):
+        response = call_terra(prompt)
 
-    report = validate_response(response)
+    try:
+        report = validate_response(response)
+        print("Evaluation AI validation successful")
+        return report
 
-    return report
+    except ValidationError:
+        print("Evaluation AI validation failed")
+
+        if attempt == 0:
+            print("Evaluation AI response failed validation. Retrying...")
+        else:
+            raise

@@ -2,24 +2,32 @@ from pydantic import BaseModel, Field
 
 
 class VisualObservation(BaseModel):
+    model_config = {"extra": "forbid"}
+
     observation: str
 
 
 class PageContext(BaseModel):
+    model_config = {"extra": "forbid"}
+
     page_type: str
     primary_purpose: str
     primary_content: str
-    prominent_actions: list[str] = Field(default_factory=list)
+    prominent_actions: list[str]
 
 
 class VisualDimensionEvidence(BaseModel):
-    mobile: list[VisualObservation] = Field(default_factory=list, max_length=1)
-    tablet: list[VisualObservation] = Field(default_factory=list, max_length=1)
-    desktop: list[VisualObservation] = Field(default_factory=list, max_length=1)
-    summary: list[VisualObservation] = Field(default_factory=list, max_length=2)
+    model_config = {"extra": "forbid"}
+
+    mobile: list[VisualObservation] = Field(max_length=1)
+    tablet: list[VisualObservation] = Field(max_length=1)
+    desktop: list[VisualObservation] = Field(max_length=1)
+    summary: list[VisualObservation] = Field(max_length=2)
 
 
 class VisualObservations(BaseModel):
+    model_config = {"extra": "forbid"}
+    
     visual_hierarchy: VisualDimensionEvidence
     navigation: VisualDimensionEvidence
     aesthetic_design: VisualDimensionEvidence
@@ -29,15 +37,18 @@ class VisualObservations(BaseModel):
 
 
 class ScreenshotIntegrity(BaseModel):
-    mobile: list[VisualObservation] = Field(default_factory=list, max_length=2)
-    tablet: list[VisualObservation] = Field(default_factory=list, max_length=2)
-    desktop: list[VisualObservation] = Field(default_factory=list, max_length=2)
-    summary: list[VisualObservation] = Field(default_factory=list, max_length=5)
+    model_config = {"extra": "forbid"}
+
+    mobile: list[VisualObservation] = Field(max_length=2)
+    tablet: list[VisualObservation] = Field(max_length=2)
+    desktop: list[VisualObservation] = Field(max_length=2)
+    summary: list[VisualObservation] = Field(max_length=5)
 
 
 class VisualEvidence(BaseModel):
+    model_config = {"extra": "forbid"}
+    
     page_context: PageContext
     visual_observations: VisualObservations
-    screenshot_integrity: ScreenshotIntegrity = Field(
-        default_factory=ScreenshotIntegrity
-    )
+    screenshot_integrity: ScreenshotIntegrity
+    
