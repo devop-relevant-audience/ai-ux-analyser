@@ -10,15 +10,6 @@ def load_report(report_path):
 
 
 def parse_report(report):
-    print(
-        "RAW TBT:",
-        report["audits"]["total-blocking-time"]["numericValue"]
-    )
-
-    print(
-        "RAW CLS:",
-        report["audits"]["cumulative-layout-shift"]["numericValue"]
-    )
 
     return {
         "performance_score": round(report["categories"]["performance"]["score"] * 100),

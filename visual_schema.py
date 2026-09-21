@@ -44,11 +44,18 @@ class ScreenshotIntegrity(BaseModel):
     desktop: list[VisualObservation] = Field(max_length=2)
     summary: list[VisualObservation] = Field(max_length=5)
 
+class ViewportSummaries(BaseModel):
+    model_config = {"extra": "forbid"}
+
+    mobile: str
+    tablet: str
+    desktop:str 
 
 class VisualEvidence(BaseModel):
     model_config = {"extra": "forbid"}
     
     page_context: PageContext
     visual_observations: VisualObservations
+    viewport_summaries: ViewportSummaries
     screenshot_integrity: ScreenshotIntegrity
     

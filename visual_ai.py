@@ -231,9 +231,9 @@ Observable CTA characteristics may include:
 
 For screenshot integrity:
 
-- Provide up to 2 observation for mobile.
-- Provide up to 2 observation for tablet.
-- Provide up to 2 observation for desktop.
+- Provide up to 2 observations for mobile.
+- Provide up to 2 observations for tablet.
+- Provide up to 2 observations for desktop.
 - Provide up to 2 cross-viewport observations in summary.
 - Only report a screenshot integrity issue when there is visible evidence of incomplete loading, corrupted rendering, missing assets, broken layout, or another possible capture artifact.
 - Do not report an issue simply because the design differs between viewport sizes.
@@ -252,71 +252,17 @@ mobile, tablet, desktop, and summary.
 
 Never omit the screenshot_integrity field.
 
+For Viewport summaries:
+- Provide one concise overall visual summary for each viewport: mobile, tablet, and desktop.
+- Each summary should describe the most notable visual characteristics of that viewport, such as layout, hierarchy, navigation, content arrangement, and visual presentation.
+- Write each summary as a short paragraph, not bullet points.
+- Do not mention UX dimension names, scores, issues, or recommendations.
+- Do not simply repeat individual observations.
+- The summary should describe what is visibly notable about that specific viewport.
 
-# Expected Output
+The viewport summaries must be plain text strings and must not contain bullet points or separate dimension labels.
 
-The response MUST use exactly the following JSON structure:
-
-{{
-  "page_context": {{
-    "page_type": "",
-    "primary_purpose": "",
-    "primary_content": "",
-    "prominent_actions": []
-  }},
-
-  "visual_observations": {{
-    "visual_hierarchy": {{
-      "mobile": [],
-      "tablet": [],
-      "desktop": [],
-      "summary": []
-    }},
-
-    "navigation": {{
-      "mobile": [],
-      "tablet": [],
-      "desktop": [],
-      "summary": []
-    }},
-
-    "aesthetic_design": {{
-      "mobile": [],
-      "tablet": [],
-      "desktop": [],
-      "summary": []
-    }},
-
-    "consistency_and_standards": {{
-      "mobile": [],
-      "tablet": [],
-      "desktop": [],
-      "summary": []
-    }},
-
-    "clarity_and_familiarity": {{
-      "mobile": [],
-      "tablet": [],
-      "desktop": [],
-      "summary": []
-    }},
-
-    "accessibility": {{
-      "mobile": [],
-      "tablet": [],
-      "desktop": [],
-      "summary": []
-      }}
-    }},
-
-    "screenshot_integrity": {{
-    "mobile": [],
-    "tablet": [],
-    "desktop": [],
-    "summary": []
-    }}
-  }}
-
+---
 
 Each observation must be an object containing:
 
@@ -324,79 +270,6 @@ Each observation must be an object containing:
 Do not rename any fields.
 
 Do not add additional fields.
-
-Example:
-
-{{
-  "visual_observations": {{
-    "visual_hierarchy": {{
-      "mobile": [
-        {{
-          "observation": "The hero content is vertically stacked, with the illustration above the centered heading, description, and buttons."
-        }}
-      ],
-      "tablet": [
-        {{
-          "observation": "The hero illustration appears above the centered hero heading, description, and buttons."
-        }}
-      ],
-      "desktop": [
-        {{
-          "observation": "The hero heading and description are positioned on the left, with the main illustration on the right."
-        }}
-      ],
-      "summary": [
-        {{
-          "observation": "Large uppercase headings are used for the hero and feature sections."
-        }},
-        {{
-          "observation": "Feature content is grouped into rounded panels containing headings, supporting text, and related imagery."
-        }}
-      ]
-    }},
-    "navigation": {{
-      "mobile": [],
-      "tablet": [],
-      "desktop": [],
-      "summary": []
-    }},
-
-    "aesthetic_design": {{
-      "mobile": [],
-      "tablet": [],
-      "desktop": [],
-      "summary": []
-    }},
-
-    "consistency_and_standards": {{
-      "mobile": [],
-      "tablet": [],
-      "desktop": [],
-      "summary": []
-    }},
-
-    "clarity_and_familiarity": {{
-      "mobile": [],
-      "tablet": [],
-      "desktop": [],
-      "summary": []
-    }},
-
-    "accessibility": {{
-      "mobile": [],
-      "tablet": [],
-      "desktop": [],
-      "summary": []
-    }}
-  }},
-
-    "screenshot_integrity": {{
-    "mobile": [],
-    "tablet": [],
-    "desktop": [],
-    "summary": []
-    }}
-  }}
 
 Return observations for the following UX dimensions:
 
@@ -502,6 +375,7 @@ def call_luna(prompt, screenshots):
               },
             },
             seed=29,
+            max_tokens=10000,
         )
 
 

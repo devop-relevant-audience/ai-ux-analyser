@@ -461,26 +461,33 @@ def call_terra(
         base_url="https://openrouter.ai/api/v1",
     )
 
-    response = client.chat.completions.create(
-        model="openai/gpt-5.6-terra",
-        messages=[
-            {
-                "role": "user",
-                "content": prompt,
-            }
-        ],
+    try: 
+        response = client.chat.completions.create(
+            model="openai/gpt-5.6-terra",
+            messages=[
+                {
+                    "role": "user",
+                    "content": prompt,
+                }
+            ],
 
-        response_format={
-            "type": "json_schema",
-            "json_schema": {
-                "name": "ux_evaluation",
-                "strict": True,
-                "schema": UXEvaluation.model_json_schema(),
-            }
-        },
+            response_format={
+                "type": "json_schema",
+                "json_schema": {
+                    "name": "ux_evaluation",
+                    "strict": True,
+                    "schema": UXEvaluation.model_json_schema(),
+                }
+            },
+            seed=29,
+            max_tokens=12000,
+        )
 
-        seed=29
-    )
+    except Exception as e:
+        print("=== TERRA API ERROR ===", flush=True)
+        print(repr(e), flush=True)
+        print("=======================", flush=True)
+        raise
 
     output_text = response.choices[0].message.content
 

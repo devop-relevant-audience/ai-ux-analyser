@@ -60,8 +60,7 @@ def capture_screenshots(url: str):
 
     screenshots = {}
 
-    timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S-%f")
-
+    timestamp = datetime.now().strftime("%d %b %Y · %I:%M %p")
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
 

@@ -368,7 +368,7 @@ The interface presents navigation controls and destinations in a clear, identifi
 
 Evaluate the following observable characteristics for this dimension:
 
-- Navigation controls are identifiable across all viewport
+- Navigation controls are identifiable across all viewports
 - Navigation destinations are clearly labelled
 - Navigation controls are visually distinguishable
 - Menus are visually identifiable
@@ -378,21 +378,27 @@ Evaluate the following observable characteristics for this dimension:
 - Visible active/current navigation states are identifiable when present
 - Navigation adapts appropriately across viewport sizes
 
+## Responsive Navigation Exception
+
+Do not treat navigation being collapsed, minimized, or placed behind a menu control on smaller viewports as a navigation issue by itself. Responsive designs may intentionally replace visible navigation links with hamburger menus or other compact controls when viewport space is limited.
+
+Only identify this as a navigation issue when there is observable evidence that the control is unclear, difficult to identify, inaccessible, misleading, or otherwise prevents users from discovering or accessing the navigation.
+
 ### Score Guidance
 
 #### Score 5
 
 Navigation is immediately visible, identifiable, and clearly organized. Menus, buttons, and page structure are consistently easy to understand and use based on their observable presentation.
 
-Ease of identifying navigation should exist for all viewports.
+Navigation should remain clearly identifiable across all viewports, whether presented as a full navigation bar or as a minimised/compact menu control. A responsive change in presentation should not reduce the score when the navigation control remains clear and accessible.
 
 #### Score 4
 
-Navigation is generally clear and easy to use. Minor improvements could be made to labels or organization, but navigation remains mostly visually understandable.
+Navigation is generally clear and easy to identify. Minor improvements could be made to labels or organisation, but navigation remains mostly visually understandable.
 
 #### Score 3
 
-Navigation is generally usable but may require additional effort to locate or understand. Some navigation elements or page organization are unclear.
+Navigation is generally identifiable but may require additional effort to locate or understand. Some navigation elements or page organisation are unclear.
 
 #### Score 2
 
@@ -451,6 +457,18 @@ Visual clutter may result from:
 
 The presence of multiple visual elements alone does not constitute clutter. The evaluator must determine whether those elements compete for attention or reduce the clarity of primary content.
 
+- Evaluate the frequency, size, visual prominence, and placement of banners and advertisements. Excessive or repeated advertisements that occupy substantial visual space, dominate the page, create visual clutter, or repeatedly interrupt the flow of primary content should reduce the Aesthetic Design score when there is observable evidence of this impact.
+
+## Advertising and Promotional Content
+
+Advertisements and promotional banners are not inherently a weakness and should not reduce the score simply because they are present.
+
+However, when advertisements are excessive, repetitive, visually prominent, unusually large, or occupy substantial areas of the interface, evaluate their cumulative effect on the visual composition.
+
+If advertising or promotional content noticeably increases visual clutter, disrupts visual rhythm, creates excessive competing focal points, or interrupts the continuity of the primary content, this should be reflected in the Aesthetic Design score.
+
+A score of 5 should not be assigned when excessive advertising creates a meaningful and observable aesthetic limitation.
+
 ### Score Guidance
 
 #### Score 5
@@ -464,6 +482,8 @@ The interface is visually clean, balanced, and cohesive, with visual elements su
 - Primary content remains visually dominant throughout the interface.
 - Visual balance and organization are maintained across the observed viewport sizes.
 - No significant aesthetic design issues are observable.
+
+A score of 5 requires the absence of meaningful observable aesthetic weaknesses. The presence of excessive, repetitive, or visually dominant advertising that disrupts content flow or visual balance is inconsistent with a score of 5.
 
 #### Score 4
 
@@ -577,28 +597,36 @@ Evaluate the following observable characteristics for this dimension:
 - Clear content organization
 - Clear and concise labels
 - No unnecessary jargon
+- Clear distinction between different content types or sections
+- Information can be understood and scanned without excessive interpretation
+- Content Hierarchy and grouping supports understanding
+- Labels and headings accurately communicate the purpose of their associated content
 
 ### Score Guidance
 
 #### Score 5
 
-Content is communicated using clear, familiar, and understandable language. Labels, icons, terminology, and content organization are intuitive and require minimal interpretation.
+Information is exceptionally clear and familiar across the observed viewports. Labels, icons, terminology, content organization, and content groupings are consistently intuitive and require minimal interpretation.
+
+There are no meaningful observable clarity limitations. Familiar elements are used appropriately, and users can readily understand the purpose and organization of the interface and its content.
+
+The presence of familiar labels, icons, or terminology alone is not sufficient for a score of 5.
 
 #### Score 4
 
-Information is generally clear and easy to understand. Minor wording or organizational improvements could improve overall clarity.
+Information is generally clear and easy to understand. Labels, terminology, icons, and content organisation are mostly intuitive and easy to identify with only minor limitations that do not significantly affect comprehension or scanning.
 
 #### Score 3
 
-Most content is understandable, although some terminology, labels, or organization may reduce clarity for certain users.
+Most content is understandable, but noticeable clarity limitations are present. Some terminology, labels, content groupings, or information density may require additional interpretation or effort to understand or scan.
 
 #### Score 2
 
-Several labels, icons, or terminology are unclear or unfamiliar, making information more difficult to understand.
+Several clarity problems are present. Contains unclear labels, unfamiliar terminology, ambigous icons, poor content grouping, or excessive information density making information more difficult to understand or locate.
 
 #### Score 1
 
-Language, labels, icons, or content organization are confusing or unfamiliar, significantly reducing comprehension.
+Information is consistently confusing, ambiguous, or difficult to interpret. Contains many unclear terminology, language, labels, poor content grouping and organisation which significant impair comprehension. 
 
 ---
 

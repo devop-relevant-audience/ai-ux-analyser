@@ -1,0 +1,87 @@
+<div
+  id="analysis-container"
+  {%
+  if
+  status
+  not
+  in
+  ["complete", "error"]
+  %}
+  hx-get="/analyse/{{ run_id }}/status"
+  hx-trigger="every 2s"
+  hx-target="#analysis-container"
+  hx-swap="outerHTML"
+  {%
+  endif
+  %}
+>
+  {% if status == "queued" %}
+
+  <p>Preparing analysis...</p>
+
+  <div class="analyse-progress-bar">
+    <div class="analyse-progress-fill" style="width: 15%"></div>
+  </div>
+
+  {% elif status == "capturing" %}
+
+  <p>Capturing website screenshots...</p>
+
+  <div class="analyse-progress-bar">
+    <div class="analyse-progress-fill" style="width: 30%"></div>
+  </div>
+
+  {% elif status == "accessibility" %}
+
+  <p>Analysing accessibility...</p>
+
+  <div class="analyse-progress-bar">
+    <div class="analyse-progress-fill" style="width: 45%"></div>
+  </div>
+
+  {% elif status == "performance" %}
+
+  <p>Analysing performance...</p>
+
+  <div class="analyse-progress-bar">
+    <div class="analyse-progress-fill" style="width: 60%"></div>
+  </div>
+
+  {% elif status == "visual" %}
+
+  <p>Analysing visual presentation...</p>
+
+  <div class="analyse-progress-bar">
+    <div class="analyse-progress-fill" style="width: 75%"></div>
+  </div>
+
+  {% elif status == "ai" %}
+
+  <p>Generating UX evaluation...</p>
+
+  <div class="analyse-progress-bar">
+    <div class="analyse-progress-fill" style="width: 90%"></div>
+  </div>
+
+  {% elif status == "report" %}
+
+  <p>Preparing your report...</p>
+
+  <div class="analyse-progress-bar">
+    <div class="analyse-progress-fill" style="width: 99%"></div>
+  </div>
+
+  {% elif status == "error" %}
+
+  <p>Something went wrong while analysing the website.</p>
+
+  {% else %}
+
+  <p>Starting analysis...</p>
+
+  <div class="analyse-progress-bar">
+    <div class="analyse-progress-fill" style="width: 5%"></div>
+  </div>
+
+  {% endif %}
+</div>
