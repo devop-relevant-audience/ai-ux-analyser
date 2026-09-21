@@ -1,0 +1,545 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard - AI UX Analyser</title>
+    <link rel="stylesheet" href="/static/css/style.css" />
+  </head>
+
+  <body>
+    <nav class="navbar">
+      <a href="/" class="logo">AI UX ANALYSER</a>
+
+      <div class="nav-links">
+        <a href="/analyse">Analyse</a>
+        <a href="/how-it-works">How It Works</a>
+      </div>
+    </nav>
+
+    <main class="dashboard-page">
+      <div>
+        <p class="dashboard-intro-eyebrow">UX EVALUATION</p>
+        <h1 class="dashboard-intro-title">Website Dashboard</h1>
+        <p class="dashboard-url">{{ url }}</p>
+      </div>
+
+      <div class="dashboard-top">
+        <section class="dashboard-panel dashboard-overall-panel">
+          <p class="dashboard-section-label">OVERALL EVALUATION</p>
+
+          <p class="dashboard-overall-description">Score:</p>
+
+          <div class="dashboard-overall-score">
+            {{ "%.1f"|format(report.ai.overall_score) }}
+            <span>/ 5</span>
+          </div>
+
+          <p class="dashboard-overall-summary">
+            {{ report.ai.overall.summary }}
+          </p>
+        </section>
+
+        <section class="dashboard-panel screenshots-panel">
+          <p class="dashboard-section-label">WEBSITE PREVIEW</p>
+
+          <p class="dashboard-preview-description">
+            Review the website across different screen sizes. Click any
+            screenshot to expand it.
+          </p>
+
+          <div class="dashboard-screenshot-list">
+            <!-- Mobile -->
+            <div class="dashboard-screenshot-item">
+              <div class="dashboard-screenshot-preview">
+                <p class="dashboard-screenshot-label">MOBILE</p>
+                <img
+                  src="/{{ screenshots.mobile }}"
+                  alt="Mobile screenshot"
+                  class="dashboard-expandable-screenshot"
+                  onclick="openScreenshot(this)"
+                />
+              </div>
+
+              <div class="dashboard-screenshot-observations">
+                <p>{{ report.visual_evidence.viewport_summaries.mobile }}</p>
+              </div>
+            </div>
+
+            <!-- Tablet -->
+            <div class="dashboard-screenshot-item">
+              <div class="dashboard-screenshot-preview">
+                <p class="dashboard-screenshot-label">TABLET</p>
+                <img
+                  src="/{{ screenshots.tablet }}"
+                  alt="Tablet screenshot"
+                  class="dashboard-expandable-screenshot"
+                  onclick="openScreenshot(this)"
+                />
+              </div>
+
+              <div class="dashboard-screenshot-observations">
+                <p>{{ report.visual_evidence.viewport_summaries.tablet }}</p>
+              </div>
+            </div>
+
+            <!-- Desktop -->
+            <div class="dashboard-screenshot-item">
+              <div class="dashboard-screenshot-preview">
+                <p class="dashboard-screenshot-label">DESKTOP</p>
+                <img
+                  src="/{{ screenshots.desktop }}"
+                  alt="Desktop screenshot"
+                  class="dashboard-expandable-screenshot"
+                  onclick="openScreenshot(this)"
+                />
+              </div>
+
+              <div class="dashboard-screenshot-observations">
+                <p>{{ report.visual_evidence.viewport_summaries.desktop }}</p>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="dashboard-bottom">
+        <section class="dashboard-panel dashboard-dimensions-panel">
+          <p class="dashboard-section-label">UX DIMENSIONS</p>
+
+          <p class="dashboard-dimensions-description">
+            Your website is evaluated across seven key UX dimensions. <br />
+            Click + to expand and see more details.
+          </p>
+
+          <a href="/how-it-works" class="dashboard-howlink-button">
+            See how we evaluate your website →
+          </a>
+
+          <div class="dashboard-dimensions-list">
+
+            <details class="dashboard-dimension-item">
+              <summary class="dashboard-dimension-row">
+                <span class="dashboard-dimension-number">01</span>
+                <span class="dashboard-dimension-name">Visual Hierarchy</span>
+                <span class="dashboard-dimension-score">
+                  {{ report.ai.dimensions.visual_hierarchy.score }} / 5
+                </span>
+              </summary>
+
+              <div class="dashboard-dimension-details">
+                <p class="dashboard-dimension-summary">
+                  {{ report.ai.dimensions.visual_hierarchy.summary }}
+                </p>
+
+                <div class="dashboard-dimension-columns">
+                  <div>
+                    <h4>Considerations</h4>
+                    <ul>
+                      {% for item in
+                      report.ai.dimensions.visual_hierarchy.considerations %}
+                      <li>{{ item }}</li>
+                      {% endfor %}
+                    </ul>
+                  </div>
+
+                  <div>
+                    <h4>Strengths</h4>
+                    <ul>
+                      {% for item in
+                      report.ai.dimensions.visual_hierarchy.strengths %}
+                      <li>{{ item }}</li>
+                      {% endfor %}
+                    </ul>
+                  </div>
+
+                  <div>
+                    <h4>Issues</h4>
+                    <ul>
+                      {% for item in
+                      report.ai.dimensions.visual_hierarchy.issues %}
+                      <li>{{ item }}</li>
+                      {% endfor %}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </details>
+
+            <details class="dashboard-dimension-item">
+              <summary class="dashboard-dimension-row">
+                <span class="dashboard-dimension-number">02</span>
+                <span class="dashboard-dimension-name">Navigation</span>
+                <span class="dashboard-dimension-score">
+                  {{ report.ai.dimensions.navigation.score }} / 5
+                </span>
+              </summary>
+
+              <div class="dashboard-dimension-details">
+                <p class="dashboard-dimension-summary">
+                  {{ report.ai.dimensions.navigation.summary }}
+                </p>
+
+                <div class="dashboard-dimension-columns">
+                  <div>
+                    <h4>Considerations</h4>
+                    <ul>
+                      {% for item in
+                      report.ai.dimensions.navigation.considerations %}
+                      <li>{{ item }}</li>
+                      {% endfor %}
+                    </ul>
+                  </div>
+
+                  <div>
+                    <h4>Strengths</h4>
+                    <ul>
+                      {% for item in report.ai.dimensions.navigation.strengths
+                      %}
+                      <li>{{ item }}</li>
+                      {% endfor %}
+                    </ul>
+                  </div>
+
+                  <div>
+                    <h4>Issues</h4>
+                    <ul>
+                      {% for item in report.ai.dimensions.navigation.issues %}
+                      <li>{{ item }}</li>
+                      {% endfor %}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </details>
+
+            <details class="dashboard-dimension-item">
+              <summary class="dashboard-dimension-row">
+                <span class="dashboard-dimension-number">03</span>
+                <span class="dashboard-dimension-name">Aesthetic Design</span>
+                <span class="dashboard-dimension-score">
+                  {{ report.ai.dimensions.aesthetic_design.score }} / 5
+                </span>
+              </summary>
+
+              <div class="dashboard-dimension-details">
+                <p class="dashboard-dimension-summary">
+                  {{ report.ai.dimensions.aesthetic_design.summary }}
+                </p>
+
+                <div class="dashboard-dimension-columns">
+                  <div>
+                    <h4>Considerations</h4>
+                    <ul>
+                      {% for item in
+                      report.ai.dimensions.aesthetic_design.considerations %}
+                      <li>{{ item }}</li>
+                      {% endfor %}
+                    </ul>
+                  </div>
+
+                  <div>
+                    <h4>Strengths</h4>
+                    <ul>
+                      {% for item in
+                      report.ai.dimensions.aesthetic_design.strengths %}
+                      <li>{{ item }}</li>
+                      {% endfor %}
+                    </ul>
+                  </div>
+
+                  <div>
+                    <h4>Issues</h4>
+                    <ul>
+                      {% for item in
+                      report.ai.dimensions.aesthetic_design.issues %}
+                      <li>{{ item }}</li>
+                      {% endfor %}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </details>
+
+            <details class="dashboard-dimension-item">
+              <summary class="dashboard-dimension-row">
+                <span class="dashboard-dimension-number">04</span>
+                <span class="dashboard-dimension-name"
+                  >Consistency &amp; Standards</span
+                >
+                <span class="dashboard-dimension-score">
+                  {{ report.ai.dimensions.consistency_and_standards.score }} / 5
+                </span>
+              </summary>
+
+              <div class="dashboard-dimension-details">
+                <p class="dashboard-dimension-summary">
+                  {{ report.ai.dimensions.consistency_and_standards.summary }}
+                </p>
+
+                <div class="dashboard-dimension-columns">
+                  <div>
+                    <h4>Considerations</h4>
+                    <ul>
+                      {% for item in
+                      report.ai.dimensions.consistency_and_standards.considerations
+                      %}
+                      <li>{{ item }}</li>
+                      {% endfor %}
+                    </ul>
+                  </div>
+
+                  <div>
+                    <h4>Strengths</h4>
+                    <ul>
+                      {% for item in
+                      report.ai.dimensions.consistency_and_standards.strengths
+                      %}
+                      <li>{{ item }}</li>
+                      {% endfor %}
+                    </ul>
+                  </div>
+
+                  <div>
+                    <h4>Issues</h4>
+                    <ul>
+                      {% for item in
+                      report.ai.dimensions.consistency_and_standards.issues %}
+                      <li>{{ item }}</li>
+                      {% endfor %}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </details>
+
+            <!-- Clarity & Familiarity -->
+            <details class="dashboard-dimension-item">
+              <summary class="dashboard-dimension-row">
+                <span class="dashboard-dimension-number">05</span>
+                <span class="dashboard-dimension-name"
+                  >Clarity &amp; Familiarity</span
+                >
+                <span class="dashboard-dimension-score">
+                  {{ report.ai.dimensions.clarity_and_familiarity.score }} / 5
+                </span>
+              </summary>
+
+              <div class="dashboard-dimension-details">
+                <p class="dashboard-dimension-summary">
+                  {{ report.ai.dimensions.clarity_and_familiarity.summary }}
+                </p>
+
+                <div class="dashboard-dimension-columns">
+                  <div>
+                    <h4>Considerations</h4>
+                    <ul>
+                      {% for item in
+                      report.ai.dimensions.clarity_and_familiarity.considerations
+                      %}
+                      <li>{{ item }}</li>
+                      {% endfor %}
+                    </ul>
+                  </div>
+
+                  <div>
+                    <h4>Strengths</h4>
+                    <ul>
+                      {% for item in
+                      report.ai.dimensions.clarity_and_familiarity.strengths %}
+                      <li>{{ item }}</li>
+                      {% endfor %}
+                    </ul>
+                  </div>
+
+                  <div>
+                    <h4>Issues</h4>
+                    <ul>
+                      {% for item in
+                      report.ai.dimensions.clarity_and_familiarity.issues %}
+                      <li>{{ item }}</li>
+                      {% endfor %}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </details>
+
+            <details class="dashboard-dimension-item">
+              <summary class="dashboard-dimension-row">
+                <span class="dashboard-dimension-number">06</span>
+                <span class="dashboard-dimension-name">Accessibility</span>
+                <span class="dashboard-dimension-score">
+                  {{ report.ai.dimensions.accessibility.score }} / 5
+                </span>
+              </summary>
+
+              <div class="dashboard-dimension-details">
+                <p class="dashboard-dimension-summary">
+                  {{ report.ai.dimensions.accessibility.summary }}
+                </p>
+
+                <div class="dashboard-dimension-columns">
+                  <div>
+                    <h4>Considerations</h4>
+                    <ul>
+                      {% for item in
+                      report.ai.dimensions.accessibility.considerations %}
+                      <li>{{ item }}</li>
+                      {% endfor %}
+                    </ul>
+                  </div>
+
+                  <div>
+                    <h4>Strengths</h4>
+                    <ul>
+                      {% for item in
+                      report.ai.dimensions.accessibility.strengths %}
+                      <li>{{ item }}</li>
+                      {% endfor %}
+                    </ul>
+                  </div>
+
+                  <div>
+                    <h4>Issues</h4>
+                    <ul>
+                      {% for item in report.ai.dimensions.accessibility.issues
+                      %}
+                      <li>{{ item }}</li>
+                      {% endfor %}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </details>
+
+            <details class="dashboard-dimension-item">
+              <summary class="dashboard-dimension-row">
+                <span class="dashboard-dimension-number">07</span>
+                <span class="dashboard-dimension-name">Performance</span>
+                <span class="dashboard-dimension-score">
+                  {{ report.ai.dimensions.performance.score }} / 5
+                </span>
+              </summary>
+
+              <div class="dashboard-dimension-details">
+                <p class="dashboard-dimension-summary">
+                  {{ report.ai.dimensions.performance.summary }}
+                </p>
+
+                <div class="dashboard-dimension-columns">
+                  <div>
+                    <h4>Considerations</h4>
+                    <ul>
+                      {% for item in
+                      report.ai.dimensions.performance.considerations %}
+                      <li>{{ item }}</li>
+                      {% endfor %}
+                    </ul>
+                  </div>
+
+                  <div>
+                    <h4>Strengths</h4>
+                    <ul>
+                      {% for item in report.ai.dimensions.performance.strengths
+                      %}
+                      <li>{{ item }}</li>
+                      {% endfor %}
+                    </ul>
+                  </div>
+
+                  <div>
+                    <h4>Issues</h4>
+                    <ul>
+                      {% for item in report.ai.dimensions.performance.issues %}
+                      <li>{{ item }}</li>
+                      {% endfor %}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </details>
+          </div>
+        </section>
+
+        <section class="dashboard-panel dashboard-recommendations-panel">
+          <p class="dashboard-section-label">PRIORITISED RECOMMENDATIONS</p>
+
+          <div class="dashboard-recommendations-list">
+            {% for recommendation in report.ai.overall.recommendations %}
+
+            <div class="dashboard-recommendation-row">
+              <div class="dashboard-recommendation-priority">
+                <span
+                  class="priority priority-{{ recommendation.priority|lower }}"
+                >
+                  {{ recommendation.priority }}
+                </span>
+              </div>
+
+              <div class="dashboard-recommendation-content">
+                <h3>{{ recommendation.issue }}</h3>
+                <p>{{ recommendation.recommendation }}</p>
+              </div>
+            </div>
+
+            {% endfor %}
+          </div>
+        </section>
+
+        <section class="dashboard-panel dashboard-full-report-panel">
+          <a href="/report/{{ run_id }}" class="dashboard-full-report-button">
+            <span>View Full Report</span>
+            <span class="arrow">→</span>
+          </a>
+        </section>
+      </div>
+    </main>
+
+    <div
+      id="dashboard-screenshot-viewer"
+      class="dashboard-screenshot-viewer"
+      onclick="closeScreenshot(event)"
+    >
+      <button
+        class="dashboard-screenshot-viewer-close"
+        onclick="closeScreenshot(event)"
+      >
+        ×
+      </button>
+
+      <div class="dashboard-screenshot-viewer-content">
+        <img
+          id="dashboard-expanded-screenshot"
+          src=""
+          alt="Expanded website screenshot"
+        />
+      </div>
+    </div>
+
+    <script>
+      function openScreenshot(image) {
+        const viewer = document.getElementById("dashboard-screenshot-viewer");
+        const expandedImage = document.getElementById(
+          "dashboard-expanded-screenshot",
+        );
+
+        expandedImage.src = image.src;
+        viewer.classList.add("active");
+        document.body.style.overflow = "hidden";
+      }
+
+      function closeScreenshot(event) {
+        if (
+          event.target.id === "dashboard-screenshot-viewer" ||
+          event.target.classList.contains("dashboard-screenshot-viewer-close")
+        ) {
+          const viewer = document.getElementById("dashboard-screenshot-viewer");
+
+          viewer.classList.remove("active");
+          document.body.style.overflow = "";
+        }
+      }
+    </script>
+  </body>
+</html>

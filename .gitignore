@@ -5,8 +5,8 @@ __pycache__/
 # Generated screenshots
 screenshots/
 
-# Lighthouse output
-lighthouse-report.json
+# Reports 
+runtime/ 
 
 # Virtual environments
 .venv/
@@ -14,3 +14,7 @@ venv/
 
 # Environment variables
 .env
+
+# Test outputs
+tests/
+
