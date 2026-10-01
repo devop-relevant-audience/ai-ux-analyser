@@ -1,92 +1,744 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-    <title>Report</title>
-
+    <meta charset="UTF-8">
+    <title>AI-POWERED UX ANALYSER</title>
     <link rel="stylesheet" href="/static/css/style.css">
-
 </head>
 
 <body>
+    <nav class="navbar">
+        <a href="/" class="logo">AI UX ANALYSER</a>
+  
+        <div class="nav-links">
+          <a href="/how-it-works">How It Works</a>
+          <a href="/analyse">Analyse a Website</a>
+        </div>
+      </nav>
 
-<h1>UX Report</h1>
+<main class="report-page">
 
-<p>
-    <strong>URL:</strong> {{ url }}
-</p>
-
-<div class="screenshots">
-
-    <div class="screenshot">
-        <h2>Mobile</h2>
-        <a href="/{{ screenshots.mobile }}" target="_blank">
-            <img src="/{{ screenshots.mobile }}">
-        </a>
+    <div class="report-hero-section">
+        <h1 class="report-hero-title">
+            AI UX ANALYSER
+        </h1>
     </div>
 
-    <div class="screenshot">
-        <h2>Tablet</h2>
-        <a href="/{{ screenshots.tablet }}" target="_blank">
-            <img src="/{{ screenshots.tablet }}">
-        </a>
+<div class="report-intro-section">
+    <h2 class="report-intro-title">
+        UX EVALUATION REPORT
+    </h2>
+
+    <p>
+        <strong>URL:</strong> {{ url }}
+    </p>
+
+    <p>
+        <strong>Generated at:</strong>
+        {{ report.timestamp }}
+    </p>
+</div>
+
+<div class="report-actions">
+    <a href="/report/{{ run_id }}/pdf" class="report-pdf-button">
+        Download PDF
+    </a>
+</div>
+
+<section class="report-overall-section">
+
+    <div class="report-overall-grid">
+
+        <div class="report-overall-card">
+
+            <h2 class="report-overall-title">
+                Overall Evaluation
+            </h2>
+
+            <div class="report-score-section">
+                <span class="report-score-number">
+                    {{ "%.1f"|format(report.ai.overall_score) }}
+                </span>
+
+                <span class="report-score-max">/ 5</span>
+            </div>
+
+            <div class="report-summary">
+                <h3>
+                    Summary
+                </h3>
+
+                <p>
+                    {{ report.ai.overall.summary }}
+                </p>
+            </div>
+
+            <div class="report-highlights">
+
+                <div class="report-highlight">
+                    <h3>Main Strengths</h3>
+
+                    <ul>
+                        {% for strength in report.ai.overall.strengths %}
+                            <li>{{ strength }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <div class="report-highlight">
+                    <h3>Main Issues</h3>
+
+                    <ul>
+                        {% for issue in report.ai.overall.issues %}
+                            <li>{{ issue }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="report-recommendations">
+
+            <h2>Prioritised Recommendations</h2>
+
+            <br>
+
+            <div class="report-recommendations-list">
+
+                {% for recommendation in report.ai.overall.recommendations %}
+
+                <div class="report-recommendation">
+
+                    <span class="report-priority">
+                        {{ recommendation.priority }}
+                    </span>
+
+                    <div>
+                        <p>
+                            <strong>Issue:</strong>
+                            {{ recommendation.issue }}
+                        </p>
+
+                        <p>
+                            <strong>Recommendation:</strong>
+                            {{ recommendation.recommendation }}
+                        </p>
+                    </div>
+
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
     </div>
 
-    <div class="screenshot">
-        <h2>Desktop</h2>
-        <a href="/{{ screenshots.desktop }}" target="_blank">
-            <img src="/{{ screenshots.desktop }}">
-        </a>
+</section>
+
+<section class="report-preview">
+
+    <h2>Website Preview</h2>
+
+    <p class="report-preview-intro">
+        The website was captured across three viewport sizes.
+    </p>
+
+        <div class="report-preview-grid">
+
+            <div class="report-preview-card">
+                <h3>Mobile</h3>
+
+                <p>
+                    {{ report.visual_evidence.viewport_summaries.mobile }}
+                </p>
+
+                <a href="/screenshots/{{ run_id }}/mobile" target="_blank">
+                    View Screenshot →
+                </a>
+            </div>
+
+            <div class="report-preview-card">
+                <h3>Tablet</h3>
+
+                <p>
+                    {{ report.visual_evidence.viewport_summaries.tablet }}
+                </p>
+
+                <a href="/screenshots/{{ run_id }}/tablet" target="_blank">
+                    View Screenshot →
+                </a>
+            </div>
+
+            <div class="report-preview-card">
+                <h3>Desktop</h3>
+    
+                <p>
+                    {{ report.visual_evidence.viewport_summaries.desktop }}
+                </p>
+    
+                <a href="/screenshots/{{ run_id }}/desktop" target="_blank">
+                    View Screenshot →
+                </a>
+            </div>
+
+        </div>
+
+    </section>
+
+<div class="report-dimension-card">
+
+    <h2 class="report-dimension-title">Visual Hierarchy</h2>
+
+    <h3 class="report-dimension-score">
+        Score: {{ report.ai.dimensions.visual_hierarchy.score }}/5
+    </h3>
+
+    <p>
+        {{ report.ai.dimensions.visual_hierarchy.summary }}
+    </p>
+
+    <div class="report-dimension-grid">
+
+        <div class="report-dimension-box">
+            <h4>Strengths</h4>
+
+            {% for item in report.ai.dimensions.visual_hierarchy.strengths %}
+                <p>{{ item }}</p>
+            {% endfor %}
+
+            <h4>Issues</h4>
+
+            {% for item in report.ai.dimensions.visual_hierarchy.issues %}
+                <p>{{ item }}</p>
+            {% endfor %}
+        </div>
+
+        <div class="report-dimension-box">
+            <h4>Considerations</h4>
+
+            {% for item in report.ai.dimensions.visual_hierarchy.considerations %}
+                <p>{{ item }}</p>
+            {% endfor %}
+        </div>
+
     </div>
 
 </div>
 
-<hr>
+            <div class="report-dimension-card">
 
-<h2>Lighthouse Report</h2>
+            <h2 class="report-dimension-title">Navigation</h2>
 
-<ul>
-    <li>Performance Score: {{ report.lighthouse.performance_score }}</li>
-    <li>Accessibility Score: {{ report.lighthouse.accessibility_score }}</li>
-    <li>Best Practices Score: {{ report.lighthouse.best_practices_score }}</li>
-    <li>SEO Score: {{ report.lighthouse.seo_score }}</li>
-    <li>First Contentful Paint (FCP): {{ report.lighthouse.fcp }} ms</li>
-    <li>Largest Contentful Paint (LCP): {{ report.lighthouse.lcp }} ms</li>
-    <li>Speed Index: {{ report.lighthouse.speed_index }}</li>
-    <li>Total Blocking Time (TBT): {{ report.lighthouse.tbt }} ms</li>
-    <li>Cumulative Layout Shift (CLS): {{ report.lighthouse.cls }}</li>
-</ul>
+            <h3 class="report-dimension-score">
+                Score: {{ report.ai.dimensions.navigation.score }}/5
+            </h3>
 
-<h2>Accessibility Report (axe)</h2>
+            <p>
+                {{ report.ai.dimensions.navigation.summary }}
+            </p>
 
-<p>
-    <strong>Total Violations:</strong>
-    {{ report.axe.violations_count }}
+            <div class="report-dimension-grid">
+
+                <div class="report-dimension-box">
+                    <h4>Strengths</h4>
+
+                {% for item in report.ai.dimensions.navigation.strengths %}
+                    <p>{{ item }}</p>
+                {% endfor %}
+
+                <h4>Issues</h4>
+
+                {% for item in report.ai.dimensions.navigation.issues %}
+                    <p>{{ item }}</p>
+                {% endfor %}
+            </div>
+
+            <div class="report-dimension-box">
+                <h4>Considerations</h4>
+
+                {% for item in report.ai.dimensions.navigation.considerations %}
+                    <p>{{ item }}</p>
+                {% endfor %}
+            </div>
+            
+        </div>
+
+    </div>
+
+<div class="report-dimension-card">
+
+    <h2 class="report-dimension-title">Aesthetic Design</h2>
+
+    <h3 class="report-dimension-score">
+        Score: {{ report.ai.dimensions.aesthetic_design.score }}/5
+    </h3>
+
+    <p>
+        {{ report.ai.dimensions.aesthetic_design.summary }}
+    </p>
+
+<div class="report-dimension-grid">
+
+    <div class="report-dimension-box">
+        <h4>Strengths</h4>
+
+        {% for item in report.ai.dimensions.aesthetic_design.strengths %}
+            <p>{{ item }}</p>
+            {% endfor %}
+
+            <h4>Issues</h4>
+
+            {% for item in report.ai.dimensions.aesthetic_design.issues %}
+            <p>{{ item }}</p>
+            {% endfor %}
+        </div>
+
+        <div class="report-dimension-box">
+            <h4>Considerations</h4>
+
+            {% for item in report.ai.dimensions.aesthetic_design.considerations %}
+                <p>{{ item }}</p>
+            {% endfor %}
+        </div>
+
+    </div>
+
+</div>
+
+<div class="report-dimension-card">
+
+    <h2 class="report-dimension-title">
+        Consistency and Standards
+    </h2>
+
+    <h3 class="report-dimension-score">
+        Score: {{ report.ai.dimensions.consistency_and_standards.score }}/5
+    </h3>
+
+    <p>
+        {{ report.ai.dimensions.consistency_and_standards.summary }}
+    </p>
+
+    <div class="report-dimension-grid">
+        
+        <div class="report-dimension-box">
+            <h4>Strengths</h4>
+
+            {% for item in report.ai.dimensions.consistency_and_standards.strengths %}
+                <p>{{ item }}</p>
+            {% endfor %}
+
+            <h4>Issues</h4>
+
+            {% for item in report.ai.dimensions.consistency_and_standards.issues %}
+                <p>{{ item }}</p>
+            {% endfor %}
+        
+        </div>
+            
+        <div class="report-dimension-box">
+            <h4>Considerations</h4>
+
+            {% for item in report.ai.dimensions.consistency_and_standards.considerations %}
+                <p>{{ item }}</p>
+            {% endfor %}
+        </div>
+
+    </div>
+
+</div>
+
+<div class="report-dimension-card">
+
+    <h2 class="report-dimension-title">Clarity and Familiarity</h2>
+
+    <h3 class="report-dimension-score">
+        Score: {{ report.ai.dimensions.clarity_and_familiarity.score }}/5
+    </h3>
+
+    <p>
+        {{ report.ai.dimensions.clarity_and_familiarity.summary }}
+    </p>
+
+    <div class="report-dimension-grid">
+
+        <div class="report-dimension-box">
+            <h4>Strengths</h4>
+
+            {% for item in report.ai.dimensions.clarity_and_familiarity.strengths %}
+                <p>{{ item }}</p>
+            {% endfor %}
+
+            <h4>Issues</h4>
+
+            {% for item in report.ai.dimensions.clarity_and_familiarity.issues %}
+                <p>{{ item }}</p>
+            {% endfor %}
+        </div>
+
+        <div class="report-dimension-box">
+            <h4>Considerations</h4>
+
+            {% for item in report.ai.dimensions.clarity_and_familiarity.considerations %}
+                <p>{{ item }}</p>
+            {% endfor %}
+        </div>
+
+    </div>
+
+</div>
+
+<div class="report-dimension-card">
+
+    <h2 class="report-dimension-title">Accessibility</h2>
+
+    <h3 class="report-dimension-score">
+        Score:
+        {{ report.ai.dimensions.accessibility.score }}/5
+    </h3>
+
+    <p>
+        {{ report.ai.dimensions.accessibility.summary }}
+    </p>
+
+
+    <div class="accessibility-components">
+
+        <div class="report-dimension-box">
+            <h3>Visual Accessibility</h3>
+
+            <h4>Score</h4>
+            <p>
+                {{ report.ai.dimensions.accessibility.visual_accessibility.score }}/5
+            </p>
+
+            <h4>Summary</h4>
+            <p>
+                {{ report.ai.dimensions.accessibility.visual_accessibility.summary }}
+            </p>
+
+            <h4>Considerations</h4>
+            {% for item in report.ai.dimensions.accessibility.visual_accessibility.considerations %}
+                <p>{{ item }}</p>
+            {% endfor %}
+
+            <h4>Strengths</h4>
+            {% for item in report.ai.dimensions.accessibility.visual_accessibility.strengths %}
+                <p>{{ item }}</p>
+            {% endfor %}
+
+            <h4>Issues</h4>
+            {% for item in report.ai.dimensions.accessibility.visual_accessibility.issues %}
+                <p>{{ item }}</p>
+            {% endfor %}
+        </div>
+
+
+        <div class="report-dimension-box">
+            <h3>Technical Accessibility</h3>
+
+            <h4>Score</h4>
+            <p>
+                {{ report.ai.dimensions.accessibility.technical_accessibility.score }}/5
+            </p>
+
+            <h4>Summary</h4>
+            <p>
+                {{ report.ai.dimensions.accessibility.technical_accessibility.summary }}
+            </p>
+
+            <h4>Considerations</h4>
+            {% for item in report.ai.dimensions.accessibility.technical_accessibility.considerations %}
+                <p>{{ item }}</p>
+            {% endfor %}
+
+            <h4>Strengths</h4>
+            {% for item in report.ai.dimensions.accessibility.technical_accessibility.strengths %}
+                <p>{{ item }}</p>
+            {% endfor %}
+
+            <h4>Issues</h4>
+            {% for item in report.ai.dimensions.accessibility.technical_accessibility.issues %}
+                <p>{{ item }}</p>
+            {% endfor %}
+        </div>
+
+    </div>
+
+
+    <div class="axe-section">
+
+        <div class="axe-summary-box">
+            <h3>Axe Summary</h3>
+
+            <p>
+                <strong>Violations:</strong>
+                {{ report.axe.summary.violations_count }}
+            </p>
+
+            <p>
+                <strong>Passes:</strong>
+                {{ report.axe.summary.passes_count }}
+            </p>
+
+            <p>
+                <strong>Incomplete:</strong>
+                {{ report.axe.summary.incomplete_count }}
+            </p>
+
+            <p>
+                <strong>Inapplicable:</strong>
+                {{ report.axe.summary.inapplicable_count }}
+            </p>
+        </div>
+
+
+        <div class="axe-details-box">
+            <h3>Detailed Axe Results</h3>
+
+            {% if report.axe.violations|length > 0 %}
+
+                <h4>Axe Violations</h4>
+
+                {% for violation in report.axe.violations %}
+
+                    <div class="axe-violation">
+
+                        <p>
+                            <strong>Rule:</strong>
+                            {{ violation.id }}
+                        </p>
+
+                        <p>
+                            <strong>Severity:</strong>
+                            {{ violation.impact or "Not specified" }}
+                        </p>
+
+                        <p>
+                            <strong>Description:</strong>
+                            {{ violation.description }}
+                        </p>
+
+                        <p>
+                            <strong>Help:</strong>
+                            {{ violation.help }}
+                        </p>
+
+                        <p>
+                            <strong>Affected elements:</strong>
+                            {{ violation.occurrences }}
+                        </p>
+
+                        {% if violation.nodes|length > 0 %}
+
+                            <h5>Affected Elements</h5>
+
+                            {% for node in violation.nodes %}
+
+                                <div class="axe-node">
+
+                                    <p>
+                                        <strong>Target:</strong>
+                                        {{ node.target }}
+                                    </p>
+
+                                    <p>
+                                        <strong>HTML:</strong>
+                                        <code>{{ node.html }}</code>
+                                    </p>
+
+                                    <p>
+                                        <strong>Failure:</strong>
+                                        {{ node.failure_summary }}
+                                    </p>
+
+                                </div>
+
+                            {% endfor %}
+
+                        {% endif %}
+
+                    </div>
+
+                {% endfor %}
+
+            {% else %}
+
+                <p>No accessibility violations found.</p>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</div>
+
+<div class="report-dimension-card">
+
+    <h2 class="report-dimension-title">Performance</h2>
+
+    <h3 class="report-dimension-score">
+        Score:
+        {{ report.ai.dimensions.performance.score }}/5
+    </h3>
+
+    <p>
+        {{ report.ai.dimensions.performance.summary }}
+    </p>
+
+
+    <div class="performance-overview">
+
+        <div class="report-dimension-box">
+
+            <h4>Strengths</h4>
+
+            {% for item in report.ai.dimensions.performance.strengths %}
+                <p>{{ item }}</p>
+            {% endfor %}
+
+            <h4>Issues</h4>
+
+            {% for item in report.ai.dimensions.performance.issues %}
+                <p>{{ item }}</p>
+            {% endfor %}
+
+        </div>
+
+
+        <div class="report-dimension-box">
+
+            <h4>Considerations</h4>
+
+            {% for item in report.ai.dimensions.performance.considerations %}
+                <p>{{ item }}</p>
+            {% endfor %}
+
+            <h4>Note</h4>
+
+            <p>
+                Lighthouse provides performance results for mobile and desktop
+                viewports only. Tablet-specific Lighthouse results are not
+                available, so tablet performance is not included in this
+                section and the Performance score is not reduced because of
+                the absence of tablet results.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="report-lighthouse-section">
+
+        <div class="report-lighthouse-box">
+
+            <h3>Mobile Lighthouse Results</h3>
+        
+            <div class="report-lighthouse-metrics">
+                <p>
+                    <strong>Performance Score:</strong>
+                    {{ report.lighthouse.mobile.performance_score }}
+                </p>
+        
+                <p>
+                    <strong>FCP:</strong>
+                    {{ report.lighthouse.mobile.fcp }} s
+                </p>
+        
+                <p>
+                    <strong>LCP:</strong>
+                    {{ report.lighthouse.mobile.lcp }} s
+                </p>
+        
+                <p>
+                    <strong>Speed Index:</strong>
+                    {{ report.lighthouse.mobile.speed_index }} s
+                </p>
+        
+                <p>
+                    <strong>TBT:</strong>
+                    {{ report.lighthouse.mobile.tbt }} ms
+                </p>
+        
+                <p>
+                    <strong>CLS:</strong>
+                    {{ report.lighthouse.mobile.cls }}
+                </p>
+            </div>
+        
+        </div>
+
+        <div class="report-lighthouse-box">
+
+            <h3>Desktop Lighthouse Results</h3>
+
+            <div class="report-lighthouse-metrics">
+                <p>
+                <strong>Performance Score:</strong>
+                {{ report.lighthouse.desktop.performance_score }}
+            </p>
+
+            <p>
+                <strong>FCP:</strong>
+                {{ report.lighthouse.desktop.fcp }} s
+            </p>
+
+            <p>
+                <strong>LCP:</strong>
+                {{ report.lighthouse.desktop.lcp }} s
+            </p>
+
+            <p>
+                <strong>Speed Index:</strong>
+                {{ report.lighthouse.desktop.speed_index }} s
+            </p>
+
+            <p>
+                <strong>TBT:</strong>
+                {{ report.lighthouse.desktop.tbt }} ms
+            </p>
+
+            <p>
+                <strong>CLS:</strong>
+                {{ report.lighthouse.desktop.cls }}
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+<h2 class="report-disclaimer-title">Disclaimer</h2>
+
+<div class="disclaimer">
+
+<p class="report-disclaimer-content">
+    This report provides an automated UX evaluation based on the website
+    content, visual presentation, accessibility results, and performance
+    data available at the time of analysis. The findings are intended to
+    support UX review and decision-making and should not be considered a
+    substitute for professional usability testing or evaluation with
+    real users.
+    <br>
+    AI-generated observations and recommendations may not capture every
+    aspect of the user experience. Results may also vary depending on
+    website content, device, browser, network conditions, and other
+    factors at the time of analysis.
 </p>
 
-{% if report.axe.violations_count > 0 %}
-<h3>Violations</h3>
+</div>
 
-<ul>
-    {% for violation in report.axe.violations %}
-    <li>
-        <strong>{{ violation.id }}</strong><br>
-        Impact: {{ violation.impact }}<br>
-        Description: {{ violation.description }}<br>
-        Help: {{ violation.help }}<br>
-        Occurrences: {{ violation.occurrences }}
-    </li>
-    <br>
-    {% endfor %}
-</ul>
-{% else %}
-<p>No accessibility violations found.</p>
-{% endif %}
+</div>
 
-<p>Generated at: {{ report.timestamp }}</p>
-
-<a href="/">Analyze another website</a>
-<br>
+</main>
 
 </body>
 
