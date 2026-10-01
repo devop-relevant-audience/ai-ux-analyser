@@ -15,6 +15,7 @@ The purpose of the AI UX Page Analyser is to streamline the process of evaluatin
 ### Scope
 
 The system analyses **individual webpages** provided through the URL submission rather than entire websites.
+
 It evaluates the webpage across seven UX dimensions:
 
 - Visual Hierarchy
@@ -29,42 +30,43 @@ The analysis combines webpage screenshots across mobile, tablet, and desktop vie
 
 ## Features
 
-**Webpage Analysis via URL**
+### Webpage Analysis via URL
 
 Receive a webpage URL submission and initiate the analysis process.
 
-**Analysis progress**
+### Analysis progress
 
 Display the progress of an analysis.
 
-**Multi-Viewport Webpage Capture**
+### Multi-Viewport Webpage Capture
 
-Capture the webpage across mobile (375px),
-tablet (768px), and desktop (1440px) viewports.
+Capture the webpage across mobile (`375px`)
+tablet (`768px`)desktop, (`1440px`) viewports.
 
-**Accessibility Analysis**
+### Accessibility Analysis
 
 Identify and collect accessibility issues and checks in a webpage using Axe.
 
-**Performance Analysis**
+### Performance Analysis
 
 Identify and collect performance metrics of a webpage using Lighthouse.
 
-**AI-powered Visual Analysis**
+### AI-powered Visual Analysis
 
 Generate visual analysis observation report from captured screenshots and provide it as objective evidence for the overall UX evaluation.
 
-**AI-powered Evaluation**
+### AI-powered Evaluation
 
 Evaluate the webpage against a defined UX rubric using combined objective evidence of visual observation report, Axe results, and Lighthouse metrics.
 
-**Interactive result dashboard**
+### Interactive result dashboard
 
 Present evaluation results through an interactive dashboard with options to view the detailed final UX report.
 
-**Final Report**
+### Final Report
 
 Generate a structured UX report providing:
+
 - an overall UX score
 - scores for each UX dimension
 - identified strengths and issues
@@ -101,25 +103,33 @@ Generate a structured UX report providing:
 
 ## Setup
 
-### 1.Clone Repository
+### 1. Clone Repository
 
-`git clone <repository-url>`
-`cd AI-Page-UX-Analyzer`
+```bash
+git clone <repository-url>
+cd AI-Page-UX-Analyzer
+```
 
-### 2.Create a Virtual Environment
+### 2. Create a Virtual Environment
 
-`python -m venv .venv`
+```bash
+python -m venv .venv
 
 For Windows PowerShell:
-`.venv\Scripts\Activate.ps1`
+.venv\Scripts\Activate.ps1
+```
 
 ### 3. Install dependencies
 
-`pip install -r requirements.txt`
+```bash
+pip install -r requirements.txt
+```
 
 ### 4. Install Playwright
 
-`playwright install`
+```bash
+playwright install
+```
 
 ### 5. Configure environment variables
 
@@ -130,11 +140,13 @@ Create a `.env` file in the project root and add required API credentials and da
 
 Do not commit the `.env` file or expose API credentials in the source code.
 
-6. Run the Application
+### 6. Run the Application
 
 Start the FastAPI development server:
 
-`python -m uvicorn app:app --reload`
+```bash
+python -m uvicorn app:app --reload
+```
 
 ## How to Run The AI UX Page Analyser
 
@@ -154,11 +166,11 @@ how webpages are evaluated.
 
 The AI UX Page Analyser follows an automated analysis pipeline which includes combining webpage capture, automated Lighthouse and Axe audits, AI-based visual analysis, UX evaluation, and UX evaluation report generation.
 
-1. URL Submission
+### 1. URL Submission
 
 The user pastes the URL of a webpage through the application interface. The submitted URL is passed to the backend to initiate the analysis process.
 
-2. Webpage capture
+### 2. Webpage capture
 
 Playwright automates a browser session and captures screenshots of the submitted webpage at three viewport sizes:
 
@@ -170,7 +182,7 @@ The capture process is optimised and includes additional handling such as page l
 
 Webpage screenshots are subsequently analysed and used as one of the objective evidence sources, used during the UX evaluation.
 
-3. Automated webpage analysis
+### 3. Automated webpage analysis
 
 Lighthouse and Axe automatically run against the submitted webpage.
 
@@ -178,7 +190,7 @@ Lighthouse and Axe act as the objective evidence layer within the analysis pipel
 
 Lighthouse provides performance metrics and audit results, while Axe provides findings related to accessibility. 
 
-4. AI Visual Analysis
+### 4. AI Visual Analysis
 
 The captured screenshots are supplied to an AI model for visual analysis. The AI then generates a visual observation report describing relevant characteristics of the webpage across the different viewport sizes.
 
@@ -186,23 +198,21 @@ Webpage contexts and elements related to UX evaluation are also collected and in
 
 Subsequently, the visual observation report is provided to the AI Model responsible for the UX evaluation.
 
-
-5. AI UX Evaluation
+### 5. AI UX Evaluation
 
 The collected Lighthouse and Axe audit results are combined with the visual observation report. The combined evidence is evaluated against the defined UX rubric.
 
 The evaluation produces scores, strengths, issues, considerations, and prioritised recommendations.
 
-6. Data Storage and Preliminary Saving
+### 6. Data Storage and Preliminary Saving
 
 The application uses PostgreSQL to store analysis data throughout the evaluation process. After the initial webpage analysis involving the Lighthouse and Axe audits are completed, the collected results are saved before the AI evaluation stage begins. The preliminary save ensures that the collected data during the initial analysis is retained even if an error occurs during subsequent stages involving AI. 
 
-
-7.Validation
+### 7.Validation
 
 AI-generated outputs are validated against the Pydantic schemas to ensure that the returned outputs follow the required structure and fields before being used to produce the final UX report.
 
-8. Result and Report
+### 8. Result and Report
 
 The final UX report is generated and presented to users through the interactive dashboard. Users can view the overall UX score, individual dimension scores, findings, prioritised recommendations, and webpage preview section where the screenshots are available for viewing.
 
