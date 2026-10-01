@@ -1,6 +1,5 @@
-import os
-import traceback
 import base64
+import traceback
 from pathlib import Path
 
 from fastapi import BackgroundTasks, FastAPI, Form, Request

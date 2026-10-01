@@ -4,7 +4,6 @@ from pathlib import Path
 from evaluation_ai import generate_ux_report
 from lighthouse import load_report, parse_report
 
-
 TEST_DIR = Path("tests/Discord")
 
 
