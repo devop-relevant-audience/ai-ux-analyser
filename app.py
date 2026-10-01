@@ -33,6 +33,23 @@ app.mount(
     name="runtime",
 )
 
+def build_final_report(
+    lighthouse_report,
+    axe_report,
+    ai_report,
+    visual_evidence,
+    overall_score,
+):
+    report = build_report(
+        lighthouse_report,
+        axe_report,
+        ai_report,
+    )
+
+    report["visual_evidence"] = visual_evidence
+    report["ai"]["overall_score"] = overall_score
+
+    return report
 
 def run_analysis(run_id: int, url: str):
     try:
@@ -111,14 +128,13 @@ def run_analysis(run_id: int, url: str):
 
         overall_score = sum(UXdimension_scores) / len(UXdimension_scores)
 
-        report = build_report(
+        report = build_final_report(
             lighthouse_report,
             axe_report,
             ai_report.model_dump(),
+            visual_evidence.model_dump(),
+            overall_score,
         )
-
-        report["visual_evidence"] = visual_evidence.model_dump()
-        report["ai"]["overall_score"] = overall_score
 
         with Session(engine) as session:
             run = session.get(Run, run_id)
