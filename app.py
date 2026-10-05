@@ -312,6 +312,7 @@ def history_run(run_id: int, request: Request):
             "request": request,
             "run": run,
             "page_name": page_name,
+            "from_history" : True,
         },
     )
 
@@ -467,7 +468,7 @@ def get_run(run_id: int, request: Request):
 
 
 @app.get("/report/{run_id}", response_class=HTMLResponse)
-def get_report(run_id: int, request: Request):
+def get_report(run_id: int, request: Request, from_history: bool = False,):
     with Session(engine) as session:
         run = session.get(Run, run_id)
 
@@ -483,6 +484,7 @@ def get_report(run_id: int, request: Request):
             "screenshots": run.screenshots,
             "report": run.report,
             "run_id": run.id,
+            "from_history": from_history,
         },
     )
 

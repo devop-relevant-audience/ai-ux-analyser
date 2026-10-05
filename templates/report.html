@@ -161,9 +161,13 @@
                     {{ report.visual_evidence.viewport_summaries.mobile }}
                 </p>
 
-                <a href="/screenshots/{{ run_id }}/mobile" target="_blank">
-                    View Screenshot →
-                </a>
+                {% if from_history %}
+                <span>Screenshot unavailable</span>
+                {% else %}
+                    <a href="/screenshots/{{ run_id }}/mobile" target="_blank">
+                        View Screenshot →
+                    </a>
+                {% endif %}
             </div>
 
             <div class="report-preview-card">
@@ -172,10 +176,14 @@
                 <p>
                     {{ report.visual_evidence.viewport_summaries.tablet }}
                 </p>
-
-                <a href="/screenshots/{{ run_id }}/tablet" target="_blank">
-                    View Screenshot →
-                </a>
+                
+                {% if from_history %}
+                <span>Screenshot unavailable</span>
+                {% else %}
+                    <a href="/screenshots/{{ run_id }}/tablet" target="_blank">
+                        View Screenshot →
+                    </a>
+                {% endif %}
             </div>
 
             <div class="report-preview-card">
@@ -184,10 +192,14 @@
                 <p>
                     {{ report.visual_evidence.viewport_summaries.desktop }}
                 </p>
-    
-                <a href="/screenshots/{{ run_id }}/desktop" target="_blank">
-                    View Screenshot →
-                </a>
+
+                {% if from_history %}
+                    <span>Screenshot unavailable</span>
+                {% else %}
+                    <a href="/screenshots/{{ run_id }}/desktop" target="_blank">
+                        View Screenshot →
+                    </a>
+                {% endif %}
             </div>
 
         </div>
