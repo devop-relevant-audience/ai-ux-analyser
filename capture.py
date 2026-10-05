@@ -1,5 +1,6 @@
 from datetime import datetime
 from pathlib import Path
+from urllib.parse import urlparse
 
 from playwright.sync_api import TimeoutError, sync_playwright
 
@@ -62,7 +63,8 @@ def capture_screenshots(url: str):
     }
 
     screenshots = {}
-
+    page_title = None
+    page_name = None
     timestamp = datetime.now().strftime("%d %b %Y · %I:%M %p")
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
@@ -76,6 +78,18 @@ def capture_screenshots(url: str):
             )
 
             page.goto(url, wait_until="domcontentloaded")
+            if page_title is None:
+                page_title = page.title()
+
+                page_name = (
+                    page.locator('meta[property="og:site_name"]').get_attribute("content")
+                    or page.locator('meta[name="application-name"]').get_attribute("content")
+                    or page_title
+                )
+
+                if not page_name or len(page_name.strip()) < 2:
+                    hostname = urlparse(url).netloc
+                    page_name = hostname.removeprefix("www.").split(".")[0].title()
 
             try:
                 page.wait_for_load_state("networkidle", timeout=2000)
@@ -103,4 +117,4 @@ def capture_screenshots(url: str):
 
         browser.close()
 
-    return screenshots
+    return screenshots, page_title,page_name

@@ -7,7 +7,8 @@ from fastapi.responses import HTMLResponse, Response
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from playwright.sync_api import sync_playwright
-from sqlmodel import Session
+from sqlmodel import Session, select
+from urllib.parse import urlparse
 
 from axe import run_axe
 from capture import capture_screenshots
@@ -59,11 +60,13 @@ def run_analysis(run_id: int, url: str):
             session.add(run)
             session.commit()
 
-        screenshots = capture_screenshots(url)
+        screenshots, page_title,page_name = capture_screenshots(url)
 
         with Session(engine) as session:
             run = session.get(Run, run_id)
             run.screenshots = screenshots
+            run.page_title = page_title
+            run.page_name = page_name
             run.status = "accessibility"
             session.add(run)
             session.commit()
@@ -221,6 +224,199 @@ def analyse(
             "url": url,
         },
     )
+
+
+def get_history_page_name(run):
+    if run.page_name:
+        return run.page_name
+
+    if run.page_title:
+        return run.page_title
+
+    hostname = urlparse(run.url).netloc
+    return hostname.removeprefix("www.").split(".")[0].title()
+
+def get_history_overall_score(run):
+    stored_score = run.report.get("ai", {}).get("overall_score")
+
+    if stored_score is not None:
+        return stored_score
+
+    dimensions = run.report["ai"]["dimensions"]
+
+    scores = [
+        dimensions["visual_hierarchy"]["score"],
+        dimensions["navigation"]["score"],
+        dimensions["aesthetic_design"]["score"],
+        dimensions["consistency_and_standards"]["score"],
+        dimensions["clarity_and_familiarity"]["score"],
+        dimensions["accessibility"]["score"],
+        dimensions["performance"]["score"],
+    ]
+
+    return sum(scores) / len(scores)
+
+@app.get("/history", response_class=HTMLResponse)
+def history(request: Request):
+    with Session(engine) as session:
+        runs = session.exec(
+            select(Run)
+            .where(Run.status == "complete")
+            .order_by(Run.timestamp.desc())
+        ).all()
+
+    history_groups = {}
+
+    for run in runs:
+        history_groups.setdefault(run.url, []).append(run)
+
+    history_groups = dict(
+        sorted(
+            history_groups.items(),
+            key=lambda item: item[1][0].timestamp,
+            reverse=True,
+        )
+    )
+
+    history_page_names = {
+    url: get_history_page_name(runs[0])
+    for url, runs in history_groups.items()
+    }
+
+
+    return templates.TemplateResponse(
+        request=request,
+        name="history_view.html",
+        context={
+            "request": request,
+            "history_groups": history_groups,
+            "history_page_names": history_page_names,
+        },
+    )
+
+
+@app.get("/history/run/{run_id}", response_class=HTMLResponse)
+def history_run(run_id: int, request: Request):
+    with Session(engine) as session:
+        run = session.get(Run, run_id)
+
+        if run is None:
+            return HTMLResponse("Run not found", status_code=404)
+
+    page_name = get_history_page_name(run)
+
+    return templates.TemplateResponse(
+        request=request,
+        name="history_run.html",
+        context={
+            "request": request,
+            "run": run,
+            "page_name": page_name,
+        },
+    )
+
+
+@app.post("/history/compare", response_class=HTMLResponse)
+def history_compare(
+    request: Request,
+    run_ids: list[int] = Form(...),
+):
+    with Session(engine) as session:
+
+        if len(run_ids) != 2:
+            return templates.TemplateResponse(
+                request=request,
+                name="history_compare.html",
+                context={
+                    "request": request,
+                    "error": "Please select exactly two runs to compare.",
+                },
+            )
+
+        runs = [
+            session.get(Run, run_id)
+            for run_id in run_ids
+        ]
+
+        if any(run is None for run in runs):
+            return templates.TemplateResponse(
+                request=request,
+                name="history_compare.html",
+                context={
+                    "request": request,
+                    "error": "One or more selected runs could not be found.",
+                },
+            )
+
+        if runs[0].url != runs[1].url:
+            return templates.TemplateResponse(
+                request=request,
+                name="history_compare.html",
+                context={
+                    "request": request,
+                    "error": "Runs must belong to the same webpage.",
+                },
+            )
+
+        earlier_run, later_run = sorted(
+            runs,
+            key=lambda run: (run.timestamp, run.id),
+        )
+
+        earlier_scores = earlier_run.report["ai"]["dimensions"]
+        later_scores = later_run.report["ai"]["dimensions"]
+
+        score_comparison = [
+            {
+                "name": "Visual Hierarchy",
+                "earlier": earlier_scores["visual_hierarchy"]["score"],
+                "later": later_scores["visual_hierarchy"]["score"],
+            },
+            {
+                "name": "Navigation",
+                "earlier": earlier_scores["navigation"]["score"],
+                "later": later_scores["navigation"]["score"],
+            },
+            {
+                "name": "Aesthetic Design",
+                "earlier": earlier_scores["aesthetic_design"]["score"],
+                "later": later_scores["aesthetic_design"]["score"],
+            },
+            {
+                "name": "Consistency & Standards",
+                "earlier": earlier_scores["consistency_and_standards"]["score"],
+                "later": later_scores["consistency_and_standards"]["score"],
+            },
+            {
+                "name": "Clarity & Familiarity",
+                "earlier": earlier_scores["clarity_and_familiarity"]["score"],
+                "later": later_scores["clarity_and_familiarity"]["score"],
+            },
+            {
+                "name": "Accessibility",
+                "earlier": earlier_scores["accessibility"]["score"],
+                "later": later_scores["accessibility"]["score"],
+            },
+            {
+                "name": "Performance",
+                "earlier": earlier_scores["performance"]["score"],
+                "later": later_scores["performance"]["score"],
+            },
+        ]
+
+        return templates.TemplateResponse(
+            request=request,
+            name="history_compare.html",
+            context={
+                "request": request,
+                "earlier_run": earlier_run,
+                "later_run": later_run,
+                "page_name": get_history_page_name(later_run),
+                "earlier_overall": get_history_overall_score(earlier_run),
+                "later_overall": get_history_overall_score(later_run),
+                "score_comparison": score_comparison,
+            },
+        )
 
     
 @app.get("/analyse/{run_id}/status")
