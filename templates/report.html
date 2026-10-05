@@ -14,6 +14,7 @@
         <div class="nav-links">
           <a href="/how-it-works">How It Works</a>
           <a href="/analyse">Analyse a webpage</a>
+          <a href="/history">History</a>
         </div>
       </nav>
 
@@ -26,9 +27,16 @@
     </div>
 
 <div class="report-intro-section">
-    <a href="/run/{{ run_id }}" class="report-back-button">
-        ← BACK TO DASHBOARD
-    </a>
+
+    {% if from_history %}
+        <a href="/history" class="report-back-button">
+            ← BACK TO HISTORY
+        </a>
+    {% else %}
+        <a href="/run/{{ run_id }}" class="report-back-button">
+            ← BACK TO DASHBOARD
+        </a>
+    {% endif %}
 
     <h2 class="report-intro-title">
         UX EVALUATION REPORT
