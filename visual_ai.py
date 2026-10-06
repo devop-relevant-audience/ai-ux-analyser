@@ -1,6 +1,6 @@
 import base64
-import os
 import json
+import os
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -347,41 +347,34 @@ def call_luna(prompt, screenshots):
                     },
                     {
                         "type": "image_url",
-                        "image_url": {
-                         "url": f"data:image/png;base64,{mobile_image}"
-                        },
-                      },
-                    {
-                        "type": "image_url",
-                        "image_url": {
-                         "url": f"data:image/png;base64,{tablet_image}"
-                        },
-                      }, 
-                    {
-                        "type": "image_url",
-                        "image_url": {
-                         "url": f"data:image/png;base64,{desktop_image}"
+                        "image_url": {"url": f"data:image/png;base64,{mobile_image}"},
                     },
-                  },
+                    {
+                        "type": "image_url",
+                        "image_url": {"url": f"data:image/png;base64,{tablet_image}"},
+                    },
+                    {
+                        "type": "image_url",
+                        "image_url": {"url": f"data:image/png;base64,{desktop_image}"},
+                    },
                 ],
-              },
-            ],
-            response_format={
-              "type": "json_schema",
-              "json_schema": {
-                  "name": "visual_evidence",
-                  "strict": True,
-                  "schema": VisualEvidence.model_json_schema(),
-              },
             },
-            seed=29,
-            max_tokens=10000,
-        )
-
+        ],
+        response_format={
+            "type": "json_schema",
+            "json_schema": {
+                "name": "visual_evidence",
+                "strict": True,
+                "schema": VisualEvidence.model_json_schema(),
+            },
+        },
+        seed=29,
+        max_tokens=10000,
+    )
 
     report = VisualEvidence.model_validate_json(response.choices[0].message.content)
 
-    output_path = Path("runtime/luna_observations.json")
+    output_path = Path("runtime/visual_observations.json")
     output_path.parent.mkdir(exist_ok=True)
 
     output_path.write_text(

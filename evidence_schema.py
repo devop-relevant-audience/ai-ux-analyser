@@ -3,7 +3,6 @@ from pydantic import BaseModel, Field
 from visual_schema import VisualObservations
 
 
-
 class LighthouseMetrics(BaseModel):
     performance_score: int = Field(ge=0, le=100)
     fcp: float
@@ -28,6 +27,7 @@ class AxeSummary(BaseModel):
     passes_count: int
     incomplete_count: int
     inapplicable_count: int
+
 
 class AxeViolation(BaseModel):
     id: str

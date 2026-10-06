@@ -15,21 +15,11 @@ def test_build_final_report_combines_all_results():
     }
 
     ai_report = {
-        "overall": {
-            "summary": "Good overall user experience."
-        },
-        "dimensions": {
-            "navigation": {
-                "score": 4
-            }
-        },
+        "overall": {"summary": "Good overall user experience."},
+        "dimensions": {"navigation": {"score": 4}},
     }
 
-    visual_evidence = {
-        "page_context": {
-            "page_type": "Landing page"
-        }
-    }
+    visual_evidence = {"page_context": {"page_type": "Landing page"}}
 
     overall_score = 4.2
 

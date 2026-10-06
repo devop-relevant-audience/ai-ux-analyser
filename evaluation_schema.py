@@ -1,4 +1,5 @@
 from typing import Literal
+
 from pydantic import BaseModel, Field
 
 
@@ -8,6 +9,7 @@ class Recommendation(BaseModel):
     priority: Literal["Low", "Medium", "High"]
     issue: str
     recommendation: str
+
 
 class OverallEvaluation(BaseModel):
     model_config = {"extra": "forbid"}
@@ -47,6 +49,7 @@ class TechnicalAccessibility(BaseModel):
     strengths: list[str] = Field(max_length=2)
     issues: list[str] = Field(max_length=2)
 
+
 class AccessibilityEvaluation(BaseModel):
     model_config = {"extra": "forbid"}
 
@@ -71,8 +74,9 @@ class Dimensions(BaseModel):
     accessibility: AccessibilityEvaluation
     performance: DimensionEvaluation
 
+
 class UXEvaluation(BaseModel):
     model_config = {"extra": "forbid"}
-    
+
     overall: OverallEvaluation
     dimensions: Dimensions

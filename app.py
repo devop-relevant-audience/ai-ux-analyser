@@ -1,7 +1,6 @@
 import base64
 import traceback
 from pathlib import Path
-from tempfile import TemporaryDirectory
 from urllib.parse import urlparse
 
 from fastapi import BackgroundTasks, FastAPI, Form, Request
@@ -34,6 +33,7 @@ app.mount(
     name="runtime",
 )
 
+
 def build_final_report(
     lighthouse_report,
     axe_report,
@@ -52,6 +52,7 @@ def build_final_report(
 
     return report
 
+
 def run_analysis(run_id: int, url: str):
 
     try:
@@ -61,7 +62,7 @@ def run_analysis(run_id: int, url: str):
             session.add(run)
             session.commit()
 
-        screenshots, page_title,page_name = capture_screenshots(url, run_id)
+        screenshots, page_title, page_name = capture_screenshots(url, run_id)
 
         with Session(engine) as session:
             run = session.get(Run, run_id)
@@ -170,6 +171,7 @@ def run_analysis(run_id: int, url: str):
 
         raise
 
+
 def run_batch_analysis(batch_id: int):
     with Session(engine) as session:
         batch = session.get(Batch, batch_id)
@@ -179,15 +181,9 @@ def run_batch_analysis(batch_id: int):
             session.add(batch)
             session.commit()
 
-        runs = session.exec(
-            select(Run)
-            .where(Run.batch_id == batch_id)
-        ).all()
+        runs = session.exec(select(Run).where(Run.batch_id == batch_id)).all()
 
-        run_data = [
-            (run.id, run.url)
-            for run in runs
-        ]
+        run_data = [(run.id, run.url) for run in runs]
 
     for run_id, url in run_data:
         try:
@@ -199,10 +195,7 @@ def run_batch_analysis(batch_id: int):
         batch = session.get(Batch, batch_id)
 
         if batch:
-            runs = session.exec(
-                select(Run)
-                .where(Run.batch_id == batch_id)
-            ).all()
+            runs = session.exec(select(Run).where(Run.batch_id == batch_id)).all()
 
             if all(run.status == "complete" for run in runs):
                 batch.status = "complete"
@@ -212,6 +205,7 @@ def run_batch_analysis(batch_id: int):
             session.add(batch)
             session.commit()
 
+
 @app.get("/", response_class=HTMLResponse)
 def home(request: Request):
     return templates.TemplateResponse(
@@ -220,6 +214,7 @@ def home(request: Request):
         context={"request": request},
     )
 
+
 @app.get("/how-it-works", response_class=HTMLResponse)
 def how_it_works(request: Request):
     return templates.TemplateResponse(
@@ -227,6 +222,7 @@ def how_it_works(request: Request):
         name="howitworks.html",
         context={"request": request},
     )
+
 
 @app.get("/analyse", response_class=HTMLResponse)
 def analyse_page(request: Request):
@@ -243,11 +239,7 @@ def analyse(
     background_tasks: BackgroundTasks,
     url: str = Form(...),
 ):
-    urls = [
-        line.strip()
-        for line in url.splitlines()
-        if line.strip()
-    ]
+    urls = [line.strip() for line in url.splitlines() if line.strip()]
 
     if len(urls) > 5:
         return templates.TemplateResponse(
@@ -285,7 +277,7 @@ def analyse(
                 "url": urls[0],
             },
         )
-    
+
     with Session(engine) as session:
         batch = Batch(
             status="queued",
@@ -327,6 +319,7 @@ def analyse(
         },
     )
 
+
 def get_history_page_name(run):
     if run.page_name:
         return run.page_name
@@ -336,6 +329,7 @@ def get_history_page_name(run):
 
     hostname = urlparse(run.url).netloc
     return hostname.removeprefix("www.").split(".")[0].title()
+
 
 def get_history_overall_score(run):
     stored_score = run.report.get("ai", {}).get("overall_score")
@@ -357,13 +351,12 @@ def get_history_overall_score(run):
 
     return sum(scores) / len(scores)
 
+
 @app.get("/history", response_class=HTMLResponse)
 def history(request: Request):
     with Session(engine) as session:
         runs = session.exec(
-            select(Run)
-            .where(Run.status == "complete")
-            .order_by(Run.timestamp.desc())
+            select(Run).where(Run.status == "complete").order_by(Run.timestamp.desc())
         ).all()
 
     history_groups = {}
@@ -380,10 +373,8 @@ def history(request: Request):
     )
 
     history_page_names = {
-    url: get_history_page_name(runs[0])
-    for url, runs in history_groups.items()
+        url: get_history_page_name(runs[0]) for url, runs in history_groups.items()
     }
-
 
     return templates.TemplateResponse(
         request=request,
@@ -413,7 +404,7 @@ def history_run(run_id: int, request: Request):
             "request": request,
             "run": run,
             "page_name": page_name,
-            "from_history" : True,
+            "from_history": True,
         },
     )
 
@@ -424,7 +415,6 @@ def history_compare(
     run_ids: list[int] = Form(...),
 ):
     with Session(engine) as session:
-
         if len(run_ids) != 2:
             return templates.TemplateResponse(
                 request=request,
@@ -435,10 +425,7 @@ def history_compare(
                 },
             )
 
-        runs = [
-            session.get(Run, run_id)
-            for run_id in run_ids
-        ]
+        runs = [session.get(Run, run_id) for run_id in run_ids]
 
         if any(run is None for run in runs):
             return templates.TemplateResponse(
@@ -520,7 +507,7 @@ def history_compare(
             },
         )
 
-    
+
 @app.get("/analyse/{run_id}/status")
 def analysis_status(run_id: int, request: Request):
     with Session(engine) as session:
@@ -530,11 +517,7 @@ def analysis_status(run_id: int, request: Request):
             return HTMLResponse("Run not found", status_code=404)
 
         if run.status == "complete":
-            return Response(
-                headers={
-                    "HX-Redirect": f"/run/{run.id}"
-                }
-            )
+            return Response(headers={"HX-Redirect": f"/run/{run.id}"})
 
     return templates.TemplateResponse(
         request=request,
@@ -546,6 +529,7 @@ def analysis_status(run_id: int, request: Request):
             "status": run.status,
         },
     )
+
 
 @app.get("/analyse/batch/{batch_id}/status", response_class=HTMLResponse)
 def batch_analysis_status(
@@ -562,31 +546,19 @@ def batch_analysis_status(
             )
 
         runs = session.exec(
-            select(Run)
-            .where(Run.batch_id == batch_id)
-            .order_by(Run.id)
+            select(Run).where(Run.batch_id == batch_id).order_by(Run.id)
         ).all()
 
-    completed = sum(
-        1 for run in runs
-        if run.status == "complete"
-    )
+    completed = sum(1 for run in runs if run.status == "complete")
 
     total = len(runs)
 
     progress = int((completed / total) * 100) if total else 0
 
-    all_finished = all(
-        run.status in {"complete", "error"}
-        for run in runs
-    )
+    all_finished = all(run.status in {"complete", "error"} for run in runs)
 
     if all_finished:
-        return Response(
-            headers={
-                "HX-Redirect": f"/batch/{batch_id}"
-            }
-        )
+        return Response(headers={"HX-Redirect": f"/batch/{batch_id}"})
 
     return templates.TemplateResponse(
         request=request,
@@ -602,6 +574,7 @@ def batch_analysis_status(
         },
     )
 
+
 @app.get("/batch/{batch_id}", response_class=HTMLResponse)
 def get_batch_dashboard(batch_id: int, request: Request):
     with Session(engine) as session:
@@ -611,9 +584,7 @@ def get_batch_dashboard(batch_id: int, request: Request):
             return HTMLResponse("Batch not found", status_code=404)
 
         runs = session.exec(
-            select(Run)
-            .where(Run.batch_id == batch_id)
-            .order_by(Run.id)
+            select(Run).where(Run.batch_id == batch_id).order_by(Run.id)
         ).all()
 
         if not runs:
@@ -642,13 +613,12 @@ def get_batch_dashboard(batch_id: int, request: Request):
         },
     )
 
+
 @app.get("/batch/{batch_id}/run/{run_id}", response_class=HTMLResponse)
 def get_batch_run(batch_id: int, run_id: int, request: Request):
     with Session(engine) as session:
         runs = session.exec(
-            select(Run)
-            .where(Run.batch_id == batch_id)
-            .order_by(Run.id)
+            select(Run).where(Run.batch_id == batch_id).order_by(Run.id)
         ).all()
 
         if not runs:
@@ -664,17 +634,9 @@ def get_batch_run(batch_id: int, run_id: int, request: Request):
 
         current_run = runs[current_index]
 
-    previous_run = (
-        runs[current_index - 1]
-        if current_index > 0
-        else None
-    )
+    previous_run = runs[current_index - 1] if current_index > 0 else None
 
-    next_run = (
-        runs[current_index + 1]
-        if current_index < len(runs) - 1
-        else None
-    )
+    next_run = runs[current_index + 1] if current_index < len(runs) - 1 else None
 
     return templates.TemplateResponse(
         request=request,
@@ -693,6 +655,7 @@ def get_batch_run(batch_id: int, run_id: int, request: Request):
             "next_run": next_run,
         },
     )
+
 
 @app.get("/run/{run_id}", response_class=HTMLResponse)
 def get_run(run_id: int, request: Request):
@@ -716,7 +679,11 @@ def get_run(run_id: int, request: Request):
 
 
 @app.get("/report/{run_id}", response_class=HTMLResponse)
-def get_report(run_id: int, request: Request, from_history: bool = False,):
+def get_report(
+    run_id: int,
+    request: Request,
+    from_history: bool = False,
+):
     with Session(engine) as session:
         run = session.get(Run, run_id)
 
@@ -736,8 +703,9 @@ def get_report(run_id: int, request: Request, from_history: bool = False,):
         },
     )
 
+
 @app.get("/report/{run_id}/pdf")
-def get_report_pdf(run_id: int, request: Request):
+def get_report_pdf(run_id: int):
     with Session(engine) as session:
         run = session.get(Run, run_id)
 
@@ -750,9 +718,7 @@ def get_report_pdf(run_id: int, request: Request):
         browser = p.chromium.launch(headless=True)
         page = browser.new_page()
 
-        page.goto(
-            f"http://127.0.0.1:8000/report/{run_id}"
-        )
+        page.goto(f"http://127.0.0.1:8000/report/{run_id}")
 
         page.wait_for_load_state("networkidle")
 
@@ -761,12 +727,10 @@ def get_report_pdf(run_id: int, request: Request):
         for viewport, path in screenshots.items():
             image_data = Path(path).read_bytes()
             encoded_image = base64.b64encode(image_data).decode("utf-8")
-            screenshot_urls[viewport] = (
-                f"data:image/png;base64,{encoded_image}"
-            )
+            screenshot_urls[viewport] = f"data:image/png;base64,{encoded_image}"
 
         page.evaluate(
-        """
+            """
         (screenshots) => {
             const appendix = document.createElement("section");
 
@@ -807,8 +771,6 @@ def get_report_pdf(run_id: int, request: Request):
         const style = document.createElement("style");
 
         style.textContent = `
-
-            /* PDF layout */
 
         .navbar,
         .report-actions,
@@ -903,7 +865,6 @@ def get_report_pdf(run_id: int, request: Request):
                 page-break-inside: avoid;
             }
 
-            /* Keep headings with the content that follows them */
             .report-dimension-title,
             .report-dimension-score,
             .report-preview h2,
@@ -1005,8 +966,8 @@ def get_report_pdf(run_id: int, request: Request):
             document.body.appendChild(appendix);
         }
         """,
-        screenshot_urls,
-    )
+            screenshot_urls,
+        )
 
         pdf = page.pdf(
             format="A4",
@@ -1029,12 +990,9 @@ def get_report_pdf(run_id: int, request: Request):
         },
     )
 
+
 @app.get("/screenshots/{run_id}/{viewport}", response_class=HTMLResponse)
-def get_screenshot(
-    run_id: int, 
-    viewport: str, 
-    request: Request
-):
+def get_screenshot(run_id: int, viewport: str, request: Request):
     with Session(engine) as session:
         run = session.get(Run, run_id)
 

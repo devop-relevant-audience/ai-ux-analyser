@@ -122,12 +122,16 @@ def capture_screenshots(url: str, run_id: int):
 
             page.evaluate("window.scrollTo(0, 0)")
             page.wait_for_function("window.scrollY === 0")
-                        
+
             page.wait_for_timeout(2000)
 
             screenshot_path = screenshot_dir / f"{timestamp}_{name}.png"
 
-            page.screenshot(path=screenshot_path, full_page=True, animations="disabled",)
+            page.screenshot(
+                path=screenshot_path,
+                full_page=True,
+                animations="disabled",
+            )
 
             screenshots[name] = str(screenshot_path)
 
@@ -135,4 +139,4 @@ def capture_screenshots(url: str, run_id: int):
 
         browser.close()
 
-    return screenshots, page_title,page_name
+    return screenshots, page_title, page_name

@@ -23,6 +23,7 @@ class Run(SQLModel, table=True):
         sa_type=JSON,
     )
 
+
 class Batch(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     timestamp: datetime = Field(default_factory=datetime.now)

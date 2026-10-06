@@ -12,7 +12,7 @@ TEST_DIR = Path("tests/Discord")
 # -------------------------
 
 with open(
-    TEST_DIR / "luna_observations.json",
+    TEST_DIR / "visual_observations.json",
     "r",
     encoding="utf-8",
 ) as file:

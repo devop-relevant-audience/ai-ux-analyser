@@ -26,7 +26,6 @@ def build_prompt(
     evidence,
 ):
 
-
     evidence_json = json.dumps(
         evidence.model_dump(),
         indent=2,
@@ -461,7 +460,7 @@ def call_terra(
         base_url="https://openrouter.ai/api/v1",
     )
 
-    try: 
+    try:
         response = client.chat.completions.create(
             model="openai/gpt-5.6-terra",
             messages=[
@@ -470,14 +469,13 @@ def call_terra(
                     "content": prompt,
                 }
             ],
-
             response_format={
                 "type": "json_schema",
                 "json_schema": {
                     "name": "ux_evaluation",
                     "strict": True,
                     "schema": UXEvaluation.model_json_schema(),
-                }
+                },
             },
             seed=29,
             max_tokens=12000,

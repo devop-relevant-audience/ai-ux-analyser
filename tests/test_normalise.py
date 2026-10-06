@@ -21,9 +21,7 @@ def test_build_report_combines_analysis_results():
     }
 
     ai_report = {
-        "overall": {
-            "summary": "The website provides a clear user experience."
-        }
+        "overall": {"summary": "The website provides a clear user experience."}
     }
 
     report = build_report(
