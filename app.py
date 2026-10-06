@@ -775,7 +775,7 @@ def get_report_pdf(run_id: int, request: Request):
                     appendix.innerHTML = `
             <div class="pdf-appendix-header">
                 <p>APPENDIX</p>
-                <h2>Screenshots</h2>
+                <h2>Webpage Preview</h2>
             </div>
 
             <div class="pdf-screenshot-grid">
@@ -808,14 +808,97 @@ def get_report_pdf(run_id: int, request: Request):
 
         style.textContent = `
 
+            /* PDF layout */
+
+        .navbar,
+        .report-actions,
+        .report-back-button {
+            display: none !important;
+        }
+        
+        .axe-details-box {
+            break-before: page;
+            page-break-before: always;
+        }
+
+        .report-recommendations {
+            margin-top: 30px;
+            break-before: page;
+            page-break-before: always;
+        }
+
+        .report-page {
+            max-width: none;
+            padding: 0;
+        }
+
+        .report-hero-section {
+            margin-bottom: 25px;
+        }
+
+        .report-intro-section {
+            margin-bottom: 30px;
+        }
+
+        .report-overall-grid {
+            grid-template-columns: 1fr;
+            gap: 25px;
+        }
+
+        .report-overall-card,
+        .report-recommendations {
+            padding: 24px;
+        }
+
+        .report-highlights {
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .report-preview {
+            break-before: page;
+            page-break-before: always;
+            break-inside: avoid;
+            page-break-inside: avoid;
+        }
+
+        .report-preview-grid {
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .report-preview-card {
+            padding: 18px 24px;
+        }
+
+        .report-dimension-grid {
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+
+        .accessibility-components {
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+
+        .performance-overview {
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+
+        .report-lighthouse-section {
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+
             .report-recommendation,
             .report-dimension-card,
             .report-dimension-box,
-            .preview-card,
+            .report-preview-card,
             .axe-summary-box,
             .axe-violation,
             .axe-node,
-            .lighthouse-box {
+            .report-lighthouse-box {
                 break-inside: avoid;
                 page-break-inside: avoid;
             }
@@ -825,9 +908,9 @@ def get_report_pdf(run_id: int, request: Request):
             .report-dimension-score,
             .report-preview h2,
             .report-recommendations h2,
-            .report-overall h2,
+            .report-overall-title,
             .axe-details-box h3,
-            .lighthouse-box h3 {
+            .report-lighthouse-box h3 {
                 break-after: avoid;
                 page-break-after: avoid;
             }
@@ -929,10 +1012,10 @@ def get_report_pdf(run_id: int, request: Request):
             format="A4",
             print_background=True,
             margin={
-                "top": "20mm",
-                "right": "15mm",
-                "bottom": "20mm",
-                "left": "15mm",
+                "top": "10mm",
+                "right": "10mm",
+                "bottom": "10mm",
+                "left": "10mm",
             },
         )
 
