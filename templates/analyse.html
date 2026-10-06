@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Analyse a webpage - AI UX Analyser</title>
+
+    <link rel="stylesheet" href="/static/css/style.css" />
+
+    <script src="https://unpkg.com/htmx.org@2.0.6"></script>
+  </head>
+
+  <body>
+    <nav class="navbar">
+      <a href="/" class="logo">AI UX ANALYSER</a>
+
+      <div class="nav-links">
+        <a href="/how-it-works">How It Works</a>
+      </div>
+    </nav>
+
+    <main class="analyse-page">
+      <p class="analyse-eyebrow">AI UX ANALYSER</p>
+
+      <h1 class="analyse-title">Analyse your webpage.</h1>
+
+      <p class="analyse-description">
+        Enter an individual webpage URL to begin the UX evaluation.
+      </p>
+
+      <div id="analyse-analysis-container">
+        <form
+          hx-post="/analyse"
+          hx-trigger="submit"
+          hx-target="#analyse-analysis-container"
+          hx-swap="innerHTML"
+        >
+          <div class="analyse-url-box">
+            <textarea
+              name="url"
+              placeholder="Paste the URL here"
+              required
+            ></textarea>
+          </div>
+
+          <button type="submit">Analyse a webpage</button>
+        </form>
+      </div>
+    </main>
+  </body>
+</html>

@@ -1,32 +1,127 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<head>
-    <title>AI UX Analyzer</title>
-</head>
+    <title>AI UX Analyser</title>
 
-<body>
+    <link rel="stylesheet" href="/static/css/style.css" />
+  </head>
 
-<h1>AI UX Analyzer</h1>
+  <body>
+    <nav class="navbar">
+      <a href="/" class="logo">AI UX ANALYSER</a>
 
-<form action="/analyze" method="post">
+      <div class="nav-links">
+        <a href="/how-it-works">How It Works</a>
+        <a href="/analyse">Analyse a webpage</a>
+      </div>
+    </nav>
 
-    <input
-        type="text"
-        name="url"
-        placeholder="https://example.com"
-        size="60"
-        required
-    >
+    <main class="home-hero">
+      <div class="home-hero-title-wrap">
+        <h1 class="home-hero-title">AI UX ANALYSER</h1>
+      </div>
+      <div class="home-hero-marquee">
+        <div class="home-hero-marquee-track">
+          <span> Understand your website's user experience. </span>
+          <span> Understand your website's user experience. </span>
+          <span> Understand your website's user experience. </span>
+        </div>
 
-    <br><br>
+        <div class="home-hero-marquee-track">
+          <span>
+            Analyse visual design, accessibility, and performance with
+            AI-powered UX evaluation.
+          </span>
+          <span>
+            Analyse visual design, accessibility, and performance with
+            AI-powered UX evaluation.
+          </span>
+          <span>
+            Analyse visual design, accessibility, and performance with
+            AI-powered UX evaluation.
+          </span>
+        </div>
+      </div>
 
-    <button type="submit">
-        Analyze
-    </button>
+      <a href="/analyse" class="home-hero-button"> Analyse a webpage </a>
+    </main>
 
-</form>
+    <section class="home-moving-text-section">
+      <div class="home-moving-text-track">
+        <span>UNDERSTAND. EVALUATE. IMPROVE.</span>
+        <span>UNDERSTAND. EVALUATE. IMPROVE.</span>
+      </div>
+    </section>
 
-</body>
+    <section class="home-ux-dimensions-section">
+      <div class="home-ux-dimensions-title">
+        <h2>
+          Your webpage,<br />
+          looked at from<br />
+          every angle.
+        </h2>
 
+        <p class="home-ux-section-description">
+          Evaluate your webpage across seven UX dimensions
+        </p>
+      </div>
+
+      <div class="home-ux-dimensions-list">
+        <div class="home-ux-dimension home-dimension-1">
+          <p>Visual Hierarchy</p>
+        </div>
+
+        <div class="home-ux-dimension home-dimension-2">
+          <p>Navigation</p>
+        </div>
+
+        <div class="home-ux-dimension home-dimension-3">
+          <p>Aesthetic Design</p>
+        </div>
+
+        <div class="home-ux-dimension home-dimension-4">
+          <p>Consistency & Standard</p>
+        </div>
+
+        <div class="home-ux-dimension home-dimension-5">
+          <p>Clarity & Familiarity</p>
+        </div>
+
+        <div class="home-ux-dimension home-dimension-6">
+          <p>Accessibility</p>
+        </div>
+
+        <div class="home-ux-dimensions-label">7 UX Dimensions</div>
+
+        <div class="home-ux-dimension home-dimension-7">
+          <p>Performance</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="home-insights-section">
+      <div class="home-insights-title">
+        <h2>
+          Personalised<br />
+          insights,<br />
+          prioritised for you.
+        </h2>
+      </div>
+
+      <div class="home-insights-description">
+        <p>
+          Your webpage is evaluated across seven UX dimensions, combining
+          objective evidence with AI-powered analysis.
+        </p>
+
+        <p>
+          Recommendations are then prioritised by importance, helping you focus
+          on the improvements that matter most.
+        </p>
+      </div>
+    </section>
+  </body>
 </html>
