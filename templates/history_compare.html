@@ -1,0 +1,127 @@
+<div class="history-run-details">
+
+  <button
+      type="button"
+      class="history-run-close"
+      aria-label="Close comparison"
+      onclick="
+          document.querySelector('#history-details').classList.remove('is-open');
+          document.body.classList.remove('history-modal-open');
+      "
+  >
+      ×
+  </button>
+
+  {% if error %}
+
+      <div class="history-run-details-header">
+
+          <p class="history-eyebrow">ANALYSIS COMPARISON</p>
+
+          <h2>
+              Unable to compare runs, Please refresh and try again.
+          </h2>
+
+          <p>
+              {{ error }}
+          </p>
+
+      </div>
+
+  {% else %}
+
+      <div class="history-run-details-header">
+
+          <p class="history-eyebrow">ANALYSIS COMPARISON</p>
+
+          <h2>
+              {{ page_name }}
+          </h2>
+
+          <p class="history-run-url">
+              {{ earlier_run.url }}
+          </p>
+
+      </div>
+
+      <div class="history-comparison-summary">
+
+        <div class="history-comparison-run">
+            <span>Earlier analysis:</span>
+    
+            <strong>
+                {{ earlier_run.timestamp.strftime("%d %b %Y · %I:%M %p") }}
+            </strong>
+        </div>
+    
+        <div class="history-comparison-run">
+            <span>Later analysis:</span>
+    
+            <strong>
+                {{ later_run.timestamp.strftime("%d %b %Y · %I:%M %p") }}
+            </strong>
+        </div>
+    
+    </div>
+
+      <div class="history-comparison-table">
+
+          <div class="history-comparison-row history-comparison-header">
+
+              <span>Dimension</span>
+
+              <span>Earlier</span>
+
+              <span>Later</span>
+
+              <span>Difference</span>
+
+          </div>
+
+          <div class="history-comparison-row">
+
+              <span>Overall UX Score</span>
+
+              <strong>
+                  {{ "%.1f"|format(earlier_overall) }}
+              </strong>
+              
+              <strong>
+                  {{ "%.1f"|format(later_overall) }}
+              </strong>
+              
+              <strong>
+                  {{ "%+.1f"|format(later_overall - earlier_overall) }}
+              </strong>
+
+          </div>
+
+          {% for dimension in score_comparison %}
+
+              <div class="history-comparison-row">
+
+                  <span>
+                      {{ dimension.name }}
+                  </span>
+
+                  <strong>
+                      {{ dimension.earlier }}/5
+                  </strong>
+
+                  <strong>
+                      {{ dimension.later }}/5
+                  </strong>
+
+                  <strong>
+                      {{ "%+.1f"|format(dimension.later - dimension.earlier) }}
+                  </strong>
+
+              </div>
+
+          {% endfor %}
+
+      </div>
+
+  {% endif %}
+
+</div>

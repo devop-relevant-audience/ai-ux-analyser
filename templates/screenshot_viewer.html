@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Screenshot — AI UX Analyser</title>
+    <link rel="stylesheet" href="/static/css/style.css" />
+  </head>
+
+  <body>
+    <div class="report-screenshot-viewer-page">
+      <header class="report-screenshot-viewer-header">
+        <a href="/report/{{ run_id }}" class="report-back-button">
+          ← Back to Full Report
+        </a>
+
+        <div>
+          <h1>{{ viewport|title }} View</h1>
+          <p>{{ url }}</p>
+        </div>
+      </header>
+
+      <main class="report-screenshot-viewer-main">
+        <a href="/{{ screenshot }}" target="_blank">
+          <img
+            src="/{{ screenshot }}"
+            alt="{{ viewport|title }} screenshot of analysed webpage"
+          />
+        </a>
+      </main>
+    </div>
+  </body>
+</html>
