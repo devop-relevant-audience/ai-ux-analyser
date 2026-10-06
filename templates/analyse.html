@@ -19,31 +19,33 @@
         <a href="/how-it-works">How It Works</a>
         <a href="/history">History</a>
       </div>
-    </nav>
+  </nav>
 
-    <main class="analyse-page">
+  <main class="analyse-page">
+
+    <div id="analyse-analysis-container">
+
       <p class="analyse-eyebrow">AI UX ANALYSER</p>
 
       <h1 class="analyse-title">Analyse your webpage.</h1>
 
       <p class="analyse-description">
-        Enter an individual webpage URL to begin the UX evaluation.
+        Enter up to 5 webpage URLs, one per line, to begin the UX evaluation.
       </p>
 
-      <div id="analyse-analysis-container">
-        <form
-          hx-post="/analyse"
-          hx-trigger="submit"
-          hx-target="#analyse-analysis-container"
-          hx-swap="innerHTML"
-        >
+      <form
+        hx-post="/analyse"
+        hx-trigger="submit"
+        hx-target="#analyse-analysis-container"
+        hx-swap="innerHTML"
+      >
           <div class="analyse-url-box">
             <textarea
               name="url"
-              placeholder="Paste the URL here"
+              placeholder="Paste the URL(s) here, one per line"
               required
-            ></textarea>
-          </div>
+          ></textarea>
+      </div>
 
           <button type="submit">Analyse a webpage</button>
         </form>

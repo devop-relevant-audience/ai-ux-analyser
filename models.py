@@ -7,6 +7,7 @@ from sqlmodel import Field, SQLModel
 
 class Run(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
+    batch_id: int | None = Field(default=None, foreign_key="batch.id")
     url: str
     page_title: str | None = None
     page_name: str | None = None
@@ -21,3 +22,8 @@ class Run(SQLModel, table=True):
         default_factory=dict,
         sa_type=JSON,
     )
+
+class Batch(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    timestamp: datetime = Field(default_factory=datetime.now)
+    status: str = Field(default="queued")

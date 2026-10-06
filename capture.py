@@ -49,9 +49,9 @@ def scroll_page(page):
         last_scroll = current_scroll
 
 
-def capture_screenshots(url: str):
-    screenshot_dir = Path("runtime/screenshots")
-    screenshot_dir.parent.mkdir(exist_ok=True)
+def capture_screenshots(url: str, run_id: int):
+    screenshot_dir = Path("runtime/screenshots") / str(run_id)
+    screenshot_dir.mkdir(parents=True, exist_ok=True)
 
     for screenshot in screenshot_dir.glob("*.png"):
         screenshot.unlink()
@@ -65,7 +65,7 @@ def capture_screenshots(url: str):
     screenshots = {}
     page_title = None
     page_name = None
-    timestamp = datetime.now().strftime("%d %b %Y · %I:%M %p")
+    timestamp = datetime.now().strftime("%d %b %Y · %I-%M %p")
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
 
@@ -81,11 +81,29 @@ def capture_screenshots(url: str):
             if page_title is None:
                 page_title = page.title()
 
-                page_name = (
-                    page.locator('meta[property="og:site_name"]').get_attribute("content")
-                    or page.locator('meta[name="application-name"]').get_attribute("content")
-                    or page_title
-                )
+                try:
+                    page_name = page.locator(
+                        'meta[property="og:site_name"]'
+                    ).get_attribute(
+                        "content",
+                        timeout=3000,
+                    )
+                except Exception:
+                    page_name = None
+
+                if not page_name:
+                    try:
+                        page_name = page.locator(
+                            'meta[name="application-name"]'
+                        ).get_attribute(
+                            "content",
+                            timeout=3000,
+                        )
+                    except Exception:
+                        page_name = None
+
+                if not page_name:
+                    page_name = page_title
 
                 if not page_name or len(page_name.strip()) < 2:
                     hostname = urlparse(url).netloc

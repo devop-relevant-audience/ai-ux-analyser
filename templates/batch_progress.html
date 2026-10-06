@@ -1,0 +1,17 @@
+<p class="analyse-eyebrow">AI UX ANALYSER</p>
+
+<h1 class="analyse-title">Analysing your webpages.</h1>
+
+<p class="analyse-description">
+  Your UX evaluations are currently being generated.
+</p>
+
+<div
+  id="batch-progress"
+  hx-get="/analyse/batch/{{ batch_id }}/status"
+  hx-trigger="load, every 2s"
+  hx-target="#batch-progress"
+  hx-swap="outerHTML"
+>
+  <p>Preparing your analyses...</p>
+</div>

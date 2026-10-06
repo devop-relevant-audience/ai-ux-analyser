@@ -1,6 +1,8 @@
 import base64
 import traceback
 from pathlib import Path
+from tempfile import TemporaryDirectory
+from urllib.parse import urlparse
 
 from fastapi import BackgroundTasks, FastAPI, Form, Request
 from fastapi.responses import HTMLResponse, Response
@@ -8,14 +10,13 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from playwright.sync_api import sync_playwright
 from sqlmodel import Session, select
-from urllib.parse import urlparse
 
 from axe import run_axe
 from capture import capture_screenshots
 from database import create_db_and_tables, engine
 from evaluation_ai import generate_ux_report
 from lighthouse import run_lighthouse
-from models import Run
+from models import Batch, Run
 from normalize import build_report
 from visual_ai import extract_visual_evidence
 
@@ -52,15 +53,15 @@ def build_final_report(
     return report
 
 def run_analysis(run_id: int, url: str):
-    try:
 
+    try:
         with Session(engine) as session:
             run = session.get(Run, run_id)
             run.status = "capturing"
             session.add(run)
             session.commit()
 
-        screenshots, page_title,page_name = capture_screenshots(url)
+        screenshots, page_title,page_name = capture_screenshots(url, run_id)
 
         with Session(engine) as session:
             run = session.get(Run, run_id)
@@ -169,6 +170,48 @@ def run_analysis(run_id: int, url: str):
 
         raise
 
+def run_batch_analysis(batch_id: int):
+    with Session(engine) as session:
+        batch = session.get(Batch, batch_id)
+
+        if batch:
+            batch.status = "running"
+            session.add(batch)
+            session.commit()
+
+        runs = session.exec(
+            select(Run)
+            .where(Run.batch_id == batch_id)
+        ).all()
+
+        run_data = [
+            (run.id, run.url)
+            for run in runs
+        ]
+
+    for run_id, url in run_data:
+        try:
+            run_analysis(run_id, url)
+        except Exception:
+            pass
+
+    with Session(engine) as session:
+        batch = session.get(Batch, batch_id)
+
+        if batch:
+            runs = session.exec(
+                select(Run)
+                .where(Run.batch_id == batch_id)
+            ).all()
+
+            if all(run.status == "complete" for run in runs):
+                batch.status = "complete"
+            else:
+                batch.status = "error"
+
+            session.add(batch)
+            session.commit()
+
 @app.get("/", response_class=HTMLResponse)
 def home(request: Request):
     return templates.TemplateResponse(
@@ -200,31 +243,89 @@ def analyse(
     background_tasks: BackgroundTasks,
     url: str = Form(...),
 ):
-    with Session(engine) as session:
-        run = Run(
-            url=url,
-            status="queued",
-        )  
-        session.add(run)
-        session.commit()
-        session.refresh(run)
+    urls = [
+        line.strip()
+        for line in url.splitlines()
+        if line.strip()
+    ]
 
-    background_tasks.add_task(
-        run_analysis,
-        run.id,
-        url,
-    )
+    if len(urls) > 5:
+        return templates.TemplateResponse(
+            request=request,
+            name="analyse.html",
+            context={
+                "request": request,
+                "error": "Please enter a maximum of 5 URLs.",
+            },
+        )
+
+    if len(urls) == 1:
+        with Session(engine) as session:
+            run = Run(
+                url=url,
+                status="queued",
+            )
+
+            session.add(run)
+            session.commit()
+            session.refresh(run)
+
+        background_tasks.add_task(
+            run_analysis,
+            run.id,
+            urls[0],
+        )
+
+        return templates.TemplateResponse(
+            request=request,
+            name="analyse_progress.html",
+            context={
+                "request": request,
+                "run_id": run.id,
+                "url": urls[0],
+            },
+        )
+    
+    with Session(engine) as session:
+        batch = Batch(
+            status="queued",
+        )
+
+        session.add(batch)
+        session.commit()
+        session.refresh(batch)
+
+        runs = []
+
+        for webpage_url in urls:
+            run = Run(
+                url=webpage_url,
+                status="queued",
+                batch_id=batch.id,
+            )
+
+            session.add(run)
+            runs.append(run)
+
+        session.commit()
+
+        for run in runs:
+            session.refresh(run)
+
+        background_tasks.add_task(
+            run_batch_analysis,
+            batch.id,
+        )
 
     return templates.TemplateResponse(
         request=request,
-        name="analyse_progress.html",
+        name="batch_progress.html",
         context={
             "request": request,
-            "run_id": run.id,
-            "url": url,
+            "batch_id": batch.id,
+            "runs": runs,
         },
     )
-
 
 def get_history_page_name(run):
     if run.page_name:
@@ -443,6 +544,153 @@ def analysis_status(run_id: int, request: Request):
             "run_id": run.id,
             "url": run.url,
             "status": run.status,
+        },
+    )
+
+@app.get("/analyse/batch/{batch_id}/status", response_class=HTMLResponse)
+def batch_analysis_status(
+    request: Request,
+    batch_id: int,
+):
+    with Session(engine) as session:
+        batch = session.get(Batch, batch_id)
+
+        if not batch:
+            return HTMLResponse(
+                "Batch not found.",
+                status_code=404,
+            )
+
+        runs = session.exec(
+            select(Run)
+            .where(Run.batch_id == batch_id)
+            .order_by(Run.id)
+        ).all()
+
+    completed = sum(
+        1 for run in runs
+        if run.status == "complete"
+    )
+
+    total = len(runs)
+
+    progress = int((completed / total) * 100) if total else 0
+
+    all_finished = all(
+        run.status in {"complete", "error"}
+        for run in runs
+    )
+
+    if all_finished:
+        return Response(
+            headers={
+                "HX-Redirect": f"/batch/{batch_id}"
+            }
+        )
+
+    return templates.TemplateResponse(
+        request=request,
+        name="batch_progress_status.html",
+        context={
+            "request": request,
+            "batch_id": batch_id,
+            "runs": runs,
+            "completed": completed,
+            "total": total,
+            "progress": progress,
+            "all_finished": all_finished,
+        },
+    )
+
+@app.get("/batch/{batch_id}", response_class=HTMLResponse)
+def get_batch_dashboard(batch_id: int, request: Request):
+    with Session(engine) as session:
+        batch = session.get(Batch, batch_id)
+
+        if batch is None:
+            return HTMLResponse("Batch not found", status_code=404)
+
+        runs = session.exec(
+            select(Run)
+            .where(Run.batch_id == batch_id)
+            .order_by(Run.id)
+        ).all()
+
+        if not runs:
+            return HTMLResponse("No runs found for this batch", status_code=404)
+
+    current_index = 0
+
+    previous_run = None
+    next_run = runs[1] if len(runs) > 1 else None
+
+    return templates.TemplateResponse(
+        request=request,
+        name="batch_dashboard.html",
+        context={
+            "request": request,
+            "batch_id": batch_id,
+            "run": runs[current_index],
+            "url": runs[current_index].url,
+            "screenshots": runs[current_index].screenshots,
+            "report": runs[current_index].report,
+            "run_id": runs[current_index].id,
+            "current_index": current_index,
+            "total_runs": len(runs),
+            "previous_run": previous_run,
+            "next_run": next_run,
+        },
+    )
+
+@app.get("/batch/{batch_id}/run/{run_id}", response_class=HTMLResponse)
+def get_batch_run(batch_id: int, run_id: int, request: Request):
+    with Session(engine) as session:
+        runs = session.exec(
+            select(Run)
+            .where(Run.batch_id == batch_id)
+            .order_by(Run.id)
+        ).all()
+
+        if not runs:
+            return HTMLResponse("No runs found for this batch", status_code=404)
+
+        current_index = next(
+            (index for index, run in enumerate(runs) if run.id == run_id),
+            None,
+        )
+
+        if current_index is None:
+            return HTMLResponse("Run not found in this batch", status_code=404)
+
+        current_run = runs[current_index]
+
+    previous_run = (
+        runs[current_index - 1]
+        if current_index > 0
+        else None
+    )
+
+    next_run = (
+        runs[current_index + 1]
+        if current_index < len(runs) - 1
+        else None
+    )
+
+    return templates.TemplateResponse(
+        request=request,
+        name="batch_dashboard.html",
+        context={
+            "request": request,
+            "batch_id": batch_id,
+            "run": current_run,
+            "url": current_run.url,
+            "screenshots": current_run.screenshots,
+            "report": current_run.report,
+            "run_id": current_run.id,
+            "current_index": current_index,
+            "total_runs": len(runs),
+            "previous_run": previous_run,
+            "next_run": next_run,
         },
     )
 

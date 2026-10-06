@@ -910,6 +910,45 @@ body {
   opacity: 0.85;
 }
 
+
+/* Batch Dashboard Navigation */
+
+.batch-dashboard-navigation {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  margin: 18px 0 24px;
+}
+
+.batch-dashboard-navigation a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #66735f;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 1;
+  text-decoration: none;
+
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.batch-dashboard-navigation a:hover {
+  color: #4f6b57;
+  transform: translateX(3px);
+}
+
+.batch-dashboard-navigation span {
+  color: #4e4c47;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 16px;
+  font-weight: 400;
+}
+
+
 /* Dashboard Page - Responsive */
 
 @media (max-width: 1100px) {
