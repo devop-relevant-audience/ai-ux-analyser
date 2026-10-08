@@ -113,7 +113,7 @@ Store past runs and allow past run comparisons.
 
 ```bash
 git clone <repository-url>
-cd AI-Page-UX-Analyzer
+cd AI-Page-UX-Analyser
 ```
 
 ### 2. Create a Virtual Environment
