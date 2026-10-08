@@ -77,7 +77,10 @@ def capture_screenshots(url: str, run_id: int):
                 }
             )
 
-            page.goto(url, wait_until="domcontentloaded")
+            response = page.goto(url, wait_until="domcontentloaded")
+            if response and response.status >= 400:
+                raise Exception(f"Unable to access webpage (HTTP {response.status}).")
+
             if page_title is None:
                 page_title = page.title()
 
