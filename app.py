@@ -245,11 +245,21 @@ def how_it_works(request: Request):
 
 
 @app.get("/analyse", response_class=HTMLResponse)
-def analyse_page(request: Request):
+def analyse_page(request: Request, error: str | None = None):
+    error_message = None
+
+    if error == "analysis_failed":
+        error_message = (
+            "Something went wrong while analysing the webpage. Please try again."
+        )
+
     return templates.TemplateResponse(
         request=request,
         name="analyse.html",
-        context={"request": request},
+        context={
+            "request": request,
+            "error": error_message,
+        },
     )
 
 
@@ -535,6 +545,9 @@ def analysis_status(run_id: int, request: Request):
 
         if run is None:
             return HTMLResponse("Run not found", status_code=404)
+
+        if run.status == "complete":
+            return Response(headers={"HX-Redirect": f"/run/{run.id}"})
 
         if run.status == "complete":
             return Response(headers={"HX-Redirect": f"/run/{run.id}"})
