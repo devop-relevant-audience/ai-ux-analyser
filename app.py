@@ -670,6 +670,7 @@ def get_run(run_id: int, request: Request):
         name="dashboard.html",
         context={
             "request": request,
+            "run" : run,
             "url": run.url,
             "screenshots": run.screenshots,
             "report": run.report,
@@ -695,6 +696,7 @@ def get_report(
         name="report.html",
         context={
             "request": request,
+            "run": run,
             "url": run.url,
             "screenshots": run.screenshots,
             "report": run.report,

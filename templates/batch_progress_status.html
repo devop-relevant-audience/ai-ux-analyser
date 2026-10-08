@@ -5,14 +5,9 @@
   hx-target="#batch-progress"
   hx-swap="outerHTML"
 >
-  <p>
-    {{ completed }} of {{ total }} analyses completed
-  </p>
+  <p>{{ completed }} of {{ total }} analyses completed</p>
 
   <div class="progress-bar">
-    <div
-      class="progress-bar-fill"
-      style="width: {{ progress }}%"
-    ></div>
+    <div class="progress-bar-fill" style="width: {{ progress }}%"></div>
   </div>
 </div>

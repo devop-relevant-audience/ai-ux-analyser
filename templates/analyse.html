@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>Analyse a webpage - AI UX Analyser</title>
+    <title>Analyser | AI UX Page Analyser</title>
 
     <link rel="stylesheet" href="/static/css/style.css" />
 
@@ -13,41 +13,41 @@
 
   <body>
     <nav class="navbar">
-      <a href="/" class="logo">AI UX ANALYSER</a>
-
+      <a href="/" class="logo">
+        <span>AI UX PAGE ANALYSER</span>
+        <span class="logo-home">HOME</span>
+      </a>
       <div class="nav-links">
         <a href="/how-it-works">How It Works</a>
         <a href="/history">History</a>
       </div>
-  </nav>
+    </nav>
 
-  <main class="analyse-page">
+    <main class="analyse-page">
+      <div id="analyse-analysis-container">
+        <p class="analyse-eyebrow">AI UX PAGE ANALYSER</p>
 
-    <div id="analyse-analysis-container">
+        <h1 class="analyse-title">Analyse your webpage</h1>
 
-      <p class="analyse-eyebrow">AI UX ANALYSER</p>
+        <p class="analyse-description">
+          Analyse up to 5 webpages at the same time.<br />
+        </p>
 
-      <h1 class="analyse-title">Analyse your webpage.</h1>
-
-      <p class="analyse-description">
-        Enter up to 5 webpage URLs, one per line, to begin the UX evaluation.
-      </p>
-
-      <form
-        hx-post="/analyse"
-        hx-trigger="submit"
-        hx-target="#analyse-analysis-container"
-        hx-swap="innerHTML"
-      >
+        <form
+          hx-post="/analyse"
+          hx-trigger="submit"
+          hx-target="#analyse-analysis-container"
+          hx-swap="innerHTML"
+        >
           <div class="analyse-url-box">
             <textarea
               name="url"
-              placeholder="Paste the URL(s) here, one per line"
+              placeholder="Paste the webpage URL(s) here, one URL per line."
               required
-          ></textarea>
-      </div>
+            ></textarea>
+          </div>
 
-          <button type="submit">Analyse a webpage</button>
+          <button type="submit">Analyse Now</button>
         </form>
       </div>
     </main>
