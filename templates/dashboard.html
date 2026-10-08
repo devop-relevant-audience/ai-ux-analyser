@@ -3,16 +3,18 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Dashboard - AI UX Analyser</title>
+    <title>Dashboard | AI UX Page Analyser</title>
     <link rel="stylesheet" href="/static/css/style.css" />
   </head>
 
   <body>
     <nav class="navbar">
-      <a href="/" class="logo">AI UX ANALYSER</a>
-
+      <a href="/" class="logo">
+        <span>AI UX PAGE ANALYSER</span>
+        <span class="logo-home">HOME</span>
+      </a>
       <div class="nav-links">
-        <a href="/analyse">Analyse</a>
+        <a href="/analyse">Analyser</a>
         <a href="/how-it-works">How It Works</a>
         <a href="/history">History</a>
       </div>
@@ -21,9 +23,12 @@
     <main class="dashboard-page">
       <div>
         <p class="dashboard-intro-eyebrow">UX EVALUATION</p>
-        <h1 class="dashboard-intro-title">Webpage Dashboard</h1>
+        <h1 class="dashboard-intro-title">Webpage Evaluation Dashboard</h1>
         <p class="dashboard-url">{{ url }}</p>
-        <br><br>
+        <p class="dashboard-date">
+          {{ run.timestamp.strftime("%d %B %Y · %I:%M %p") }}
+        </p>
+        <br /><br />
       </div>
 
       <div class="dashboard-top">
@@ -107,7 +112,7 @@
 
       <div class="dashboard-bottom">
         <section class="dashboard-panel dashboard-dimensions-panel">
-          <p class="dashboard-section-label">UX DIMENSIONS</p>
+          <p class="dashboard-section-label">UX DIMENSIONS SCORES</p>
 
           <p class="dashboard-dimensions-description">
             Your webpage is evaluated across seven key UX dimensions. <br />
@@ -115,11 +120,10 @@
           </p>
 
           <a href="/how-it-works" class="dashboard-howlink-button">
-            See how we evaluate your webpage →
+            See how we evaluate your webpage
           </a>
 
           <div class="dashboard-dimensions-list">
-
             <details class="dashboard-dimension-item">
               <summary class="dashboard-dimension-row">
                 <span class="dashboard-dimension-number">01</span>

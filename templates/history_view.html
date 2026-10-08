@@ -1,175 +1,132 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>History | AI UX Analyser</title>
+    <title>History | AI UX Page Analyser</title>
 
-    <link rel="stylesheet" href="{{ url_for('static', path='css/style.css') }}">
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', path='css/style.css') }}"
+    />
     <script src="{{ url_for('static', path='js/htmx.min.js') }}"></script>
-</head>
+  </head>
 
-<body class="history-page">
-
-  <nav class="navbar">
-    <a href="/" class="logo">AI UX ANALYSER</a>
-
-    <div class="nav-links">
+  <body class="history-page">
+    <nav class="navbar">
+      <a href="/" class="logo">
+        <span>AI UX PAGE ANALYSER</span>
+        <span class="logo-home">HOME</span>
+      </a>
+      <div class="nav-links">
         <a href="/how-it-works">How It Works</a>
-        <a href="/analyse">Analyse a webpage</a>
+        <a href="/analyse">Analyser</a>
         <a href="/history">History</a>
-    </div>
-  </nav>
+      </div>
+    </nav>
 
     <main class="history-container">
+      <section class="history-header">
+        <p class="history-eyebrow">ANALYSIS HISTORY</p>
+        <h1>History</h1>
+        <p>
+          Browse previously completed UX analyses and compare how a webpage has changed over
+          time.<br>
+          Select past runs from the same URL group to compare.
+        </p>
+      </section>
 
-        <section class="history-header">
-            <p class="history-eyebrow">ANALYSIS HISTORY</p>
-            <h1>History</h1>
-            <p>
-                Browse previous UX analyses and compare how a webpage
-                has changed over time.
-            </p>
-        </section>
+      <section class="history-content">
+        {% if history_groups %} {% for url, runs in history_groups.items() %}
 
-        <section class="history-content">
+        <article class="history-site-card">
+          <div class="history-site-header">
+            <div class="history-site-info">
+              <h2>{{ history_page_names[url] }}</h2>
 
-            {% if history_groups %}
+              <p class="history-site-url" title="{{ url }}">{{ url }}</p>
+            </div>
 
-                {% for url, runs in history_groups.items() %}
+            <span class="history-run-count">
+              {{ runs|length }} {% if runs|length == 1 %} run {% else %} runs {%
+              endif %}
+            </span>
+          </div>
 
-                    <article class="history-site-card">
-                      <div class="history-site-header">
+          <form class="history-compare-form">
+            <div class="history-run-list">
+              {% for run in runs %}
 
-                        <div class="history-site-info">
-                    
-                            <h2>
-                              {{ history_page_names[url] }}
-                            </h2>
-                    
-                            <p
-                                class="history-site-url"
-                                title="{{ url }}"
-                            >
-                                {{ url }}
-                            </p>
-                    
-                        </div>
-                    
-                        <span class="history-run-count">
-                            {{ runs|length }}
-                            {% if runs|length == 1 %}
-                                run
-                            {% else %}
-                                runs
-                            {% endif %}
-                        </span>
-                    
-                    </div>
+              <div class="history-run-row">
+                <label class="history-run-select">
+                  <input type="checkbox" name="run_ids" value="{{ run.id }}" />
+                </label>
 
-                    <form class="history-compare-form">
-
-                      <div class="history-run-list">
-                  
-                          {% for run in runs %}
-                  
-                              <div class="history-run-row">
-                  
-                                  <label class="history-run-select">
-                                      <input
-                                          type="checkbox"
-                                          name="run_ids"
-                                          value="{{ run.id }}"
-                                      >
-                                  </label>
-                  
-                                  <button
-                                      type="button"
-                                      class="history-run"
-                                      hx-get="/history/run/{{ run.id }}"
-                                      hx-target="#history-details"
-                                      hx-swap="innerHTML"
-                                      hx-on::after-request="
+                <button
+                  type="button"
+                  class="history-run"
+                  hx-get="/history/run/{{ run.id }}"
+                  hx-target="#history-details"
+                  hx-swap="innerHTML"
+                  hx-on::after-request="
                                           document.querySelector('#history-details').classList.add('is-open');
                                           document.body.classList.add('history-modal-open');
                                       "
-                                  >
-                  
-                                      <div class="history-run-info">
-                  
-                                          <span class="history-run-date">
-                                              {{ run.timestamp.strftime("%d %b %Y · %I:%M %p") }}
-                                          </span>
-                  
-                                          <span class="history-run-id">
-                                              Run #{{ run.id }}
-                                          </span>
+                >
+                  <div class="history-run-info">
+                    <span class="history-run-date">
+                      {{ run.timestamp.strftime("%d %b %Y · %I:%M %p") }}
+                    </span>
 
-                                          <span class="history-run-score">
-                                            {% if run.report and run.report.ai and run.report.ai.overall_score is defined %}
-                                                Overall UX Score: {{ "%.1f"|format(run.report.ai.overall_score) }}/5
-                                            {% else %}
-                                                Overall UX Score: unavailable for this run
-                                            {% endif %}
-                                        </span>
-                  
-                                      </div>
-                  
-                                      <span class="history-run-arrow">
-                                          →
-                                      </span>
-                  
-                                  </button>
-                  
-                              </div>
-                  
-                          {% endfor %}
-                  
-                      </div>
-                  
-                      <button
-                          type="button"
-                          class="historyview-compare-button"
-                          hx-post="/history/compare"
-                          hx-include="closest form"
-                          hx-target="#history-details"
-                          hx-swap="innerHTML"
-                          hx-on::after-request="
+                    <span class="history-run-id"> Run #{{ run.id }} </span>
+
+                    <span class="history-run-score">
+                      {% if run.report and run.report.ai and
+                      run.report.ai.overall_score is defined %} Overall UX
+                      Score: {{ "%.1f"|format(run.report.ai.overall_score) }}/5
+                      {% else %} Overall UX Score: unavailable for this run {%
+                      endif %}
+                    </span>
+                  </div>
+
+                  <span class="history-run-arrow"> → </span>
+                </button>
+              </div>
+
+              {% endfor %}
+            </div>
+
+            <button
+              type="button"
+              class="historyview-compare-button"
+              hx-post="/history/compare"
+              hx-include="closest form"
+              hx-target="#history-details"
+              hx-swap="innerHTML"
+              hx-on::after-request="
                               document.querySelector('#history-details').classList.add('is-open');
                               document.body.classList.add('history-modal-open');
                           "
-                      >
-                          Compare selected
-                      </button>
-                  
-                  </form>
+            >
+              Compare selected runs
+            </button>
+          </form>
+        </article>
 
-                </article>
+        {% endfor %} {% else %}
 
-                {% endfor %}
+        <div class="history-empty">
+          <h2>No analysis history yet</h2>
+          <p>Completed analyses will appear here once you analyse a webpage.</p>
 
-            {% else %}
+          <a href="/analyse"> Analyse a webpage </a>
+        </div>
 
-                <div class="history-empty">
-                    <h2>No analysis history yet</h2>
-                    <p>
-                        Completed analyses will appear here once you analyse a webpage.
-                    </p>
+        {% endif %}
+      </section>
 
-                    <a href="/analyse">
-                        Analyse a webpage
-                    </a>
-                </div>
-
-            {% endif %}
-
-        </section>
-
-        <section id="history-details" class="history-details">
-        </section>
-
+      <section id="history-details" class="history-details"></section>
     </main>
-
-</body>
+  </body>
 </html>
