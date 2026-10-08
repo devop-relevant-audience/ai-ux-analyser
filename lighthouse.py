@@ -36,6 +36,19 @@ def parse_report(report):
     }
 
 
+def run_lighthouse_command(command):
+    for attempt in range(2):
+        try:
+            subprocess.run(
+                command,
+                check=True,
+            )
+            return
+        except subprocess.CalledProcessError:
+            if attempt == 1:
+                raise
+
+
 def run_lighthouse(url):
     lighthouse_cmd = (
         "lighthouse.cmd" if platform.system() == "Windows" else "lighthouse"
@@ -44,7 +57,7 @@ def run_lighthouse(url):
     mobile_output_path = Path("runtime/lighthouse-mobile-report.json")
     mobile_output_path.parent.mkdir(exist_ok=True)
 
-    subprocess.run(
+    run_lighthouse_command(
         [
             lighthouse_cmd,
             url,
@@ -54,7 +67,6 @@ def run_lighthouse(url):
             "--chrome-flags=--headless --no-sandbox",
             "--form-factor=mobile",
         ],
-        check=True,
     )
 
     mobile_report = load_report(mobile_output_path)
@@ -63,7 +75,7 @@ def run_lighthouse(url):
     desktop_output_path = Path("runtime/lighthouse-desktop-report.json")
     desktop_output_path.parent.mkdir(exist_ok=True)
 
-    subprocess.run(
+    run_lighthouse_command(
         [
             lighthouse_cmd,
             url,
@@ -73,7 +85,6 @@ def run_lighthouse(url):
             "--chrome-flags=--headless --no-sandbox",
             "--preset=desktop",
         ],
-        check=True,
     )
 
     desktop_report = load_report(desktop_output_path)
