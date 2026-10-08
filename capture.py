@@ -27,7 +27,7 @@ def dismiss_cookie_banner(page):
 
     for text in buttons:
         try:
-            page.get_by_role("button", name=text, exact=True).first.click(timeout=1000)
+            page.get_by_role("button", name=text, exact=True).first.click(timeout=300)
 
             return
         except TimeoutError:
@@ -39,7 +39,7 @@ def scroll_page(page):
 
     while True:
         page.mouse.wheel(0, 1000)
-        page.wait_for_timeout(500)
+        page.wait_for_timeout(200)
 
         current_scroll = page.evaluate("window.scrollY")
 
@@ -145,14 +145,14 @@ def capture_screenshots(url: str, run_id: int):
 
             dismiss_cookie_banner(page)
 
-            page.wait_for_timeout(1000)
+            page.wait_for_timeout(500)
 
             scroll_page(page)
 
             page.evaluate("window.scrollTo(0, 0)")
             page.wait_for_function("window.scrollY === 0")
 
-            page.wait_for_timeout(2000)
+            page.wait_for_timeout(500)
 
             screenshot_path = screenshot_dir / f"{timestamp}_{name}.png"
 
