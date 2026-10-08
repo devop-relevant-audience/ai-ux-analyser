@@ -32,7 +32,7 @@ The analysis combines webpage screenshots across mobile, tablet, and desktop vie
 
 ### Webpage Analysis via URL
 
-Receive a webpage URL submission and initiate the analysis process.
+Receive up to 5 webpage URL(s) submissions and run batch analyses.
 
 ### Analysis progress
 
@@ -41,7 +41,7 @@ Display the progress of an analysis.
 ### Multi-Viewport Webpage Capture
 
 Capture the webpage across mobile (`375px`)
-tablet (`768px`)desktop, (`1440px`) viewports.
+tablet (`768px`), and desktop, (`1440px`) viewports.
 
 ### Accessibility Analysis
 
@@ -63,6 +63,8 @@ Evaluate the webpage against a defined UX rubric using combined objective eviden
 
 Present evaluation results through an interactive dashboard with options to view the detailed final UX report.
 
+Batch analysis results displays are also supported.
+
 ### Final Report
 
 Generate a structured UX report providing:
@@ -73,6 +75,10 @@ Generate a structured UX report providing:
 - prioritised recommendations
 - visual observations of the webpage across the viewports
 - report available for download as PDF
+
+### History viewing and past runs comparison
+
+Store past runs and allow past run comparisons.
 
 ## Technology Stack
 
@@ -91,15 +97,15 @@ Generate a structured UX report providing:
 **HTMX** - Interactive page updates and analysis progress
 
 ### Analysis & AI
-**Playwright** - Webpage capture
-**Axe** - Automated webpage accessibility testing/analysis
-**Lighthouse CLI** - Automate webpage performance testing/analysis 
-**OpenAI Models** - AI models used for visual analysis and  UX evaluation
-**Pydantic** - Pydantic schema used for structured output and schema validation
+- **Playwright** - Webpage capture
+- **Axe** - Automated webpage accessibility testing/analysis
+- **Lighthouse CLI** - Automate webpage performance testing/analysis 
+- **OpenAI Models** - AI models used for visual analysis and  UX evaluation
+- **Pydantic** - Pydantic schema used for structured output and schema validation
 
 ### Testing & Development
-**pytest** - Automated testing
-**Git/Github** - Version control and source code management
+- **pytest** - Automated testing
+- **Git/Github** - Version control and source code management
 
 ## Setup
 
@@ -135,12 +141,31 @@ playwright install
 
 Create a `.env` file in the project root and add required API credentials and database configuration
 
-`OPENROUTER_API_KEY=your_api_key`
-`DATABASE_URL=your_database_url`
+OPENROUTER_API_KEY=your_openrouter_api_key
+
+DATABASE_URL=postgresql+psycopg://username:password@localhost:5432/ai_ux_page_analyser
 
 Do not commit the `.env` file or expose API credentials in the source code.
 
-### 6. Run the Application
+### 6. Database
+
+The application uses PostgreSQL to store analysis runs and batch information.
+
+Install PostgreSQL and create a local PostgreSQL database.
+
+```bash
+createdb -U postgres ai_ux_page_analyser
+```
+
+Create a `.env` file in the project root and add credentials following the provided `.env.example` file content.
+
+To access the database:
+
+```bash
+psql -U postgres -d ai_ux_page_analyser;
+```
+
+### 7. Run the Application
 
 Start the FastAPI development server:
 
@@ -148,19 +173,22 @@ Start the FastAPI development server:
 python -m uvicorn app:app --reload
 ```
 
+
+
 ## How to Run The AI UX Page Analyser
 
 1. Open the application in a web browser
 2. Enter the URL of the webpage to be analysed
-3. Submit the URL to start the analysis
+3. Submit up to 5 URLs to start the analysis
 4. Wait for analysis process to complete.
 5. Review the generated evaluation results through the dashboard.
 6. Access the full UX report to view the detailed evaluation report from the dashboard.
 7. Download the report as PDF if required.
 
 Optional:
-Find `How it works` page from the navigation bar to view
-how webpages are evaluated.
+1. Find `How it works` page from the navigation bar to view how webpages are evaluated.
+2. Access `History` page to view past analysis runs and compare past runs to view score comparison tables for the same webpage.
+
 
 ## How the AI UX Page Analyser Works
 
@@ -168,7 +196,7 @@ The AI UX Page Analyser follows an automated analysis pipeline which includes co
 
 ### 1. URL Submission
 
-The user pastes the URL of a webpage through the application interface. The submitted URL is passed to the backend to initiate the analysis process.
+The user pastes the URL of a webpage or in a batch up to 5 URLs, through the application interface. The submitted URL is passed to the backend to initiate the analysis process.
 
 ### 2. Webpage capture
 
@@ -186,7 +214,7 @@ Webpage screenshots are subsequently analysed and used as one of the objective e
 
 Lighthouse and Axe automatically run against the submitted webpage.
 
-Lighthouse and Axe act as the objective evidence layer within the analysis pipeline to lower subjectivity in the evaluation, it is collected and provided to the AI during the UX evaluation process.
+Lighthouse and Axe act as the objective evidence layer within the analysis pipeline to lower subjectivity in the evaluation. Their results are collected and provided to the AI during the UX evaluation process.
 
 Lighthouse provides performance metrics and audit results, while Axe provides findings related to accessibility. 
 
