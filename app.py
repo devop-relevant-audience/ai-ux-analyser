@@ -35,6 +35,15 @@ app.mount(
 )
 
 
+def normalise_url(url: str):
+    url = url.strip()
+
+    if not url.startswith(("http://", "https://")):
+        url = "https://" + url
+
+    return url
+
+
 def cleanup_old_screenshots():
     screenshots_dir = Path("runtime/screenshots")
 
@@ -245,20 +254,12 @@ def how_it_works(request: Request):
 
 
 @app.get("/analyse", response_class=HTMLResponse)
-def analyse_page(request: Request, error: str | None = None):
-    error_message = None
-
-    if error == "analysis_failed":
-        error_message = (
-            "Something went wrong while analysing the webpage. Please try again."
-        )
-
+def analyse_page(request: Request):
     return templates.TemplateResponse(
         request=request,
         name="analyse.html",
         context={
             "request": request,
-            "error": error_message,
         },
     )
 
@@ -282,9 +283,11 @@ def analyse(
         )
 
     if len(urls) == 1:
+        normalised_url = normalise_url(urls[0])
+
         with Session(engine) as session:
             run = Run(
-                url=url,
+                url=normalised_url,
                 status="queued",
             )
 
@@ -295,7 +298,7 @@ def analyse(
         background_tasks.add_task(
             run_analysis,
             run.id,
-            urls[0],
+            normalised_url,
         )
 
         return templates.TemplateResponse(
@@ -320,8 +323,10 @@ def analyse(
         runs = []
 
         for webpage_url in urls:
+            normalised_url = normalise_url(webpage_url)
+
             run = Run(
-                url=webpage_url,
+                url=normalised_url,
                 status="queued",
                 batch_id=batch.id,
             )
@@ -545,9 +550,6 @@ def analysis_status(run_id: int, request: Request):
 
         if run is None:
             return HTMLResponse("Run not found", status_code=404)
-
-        if run.status == "complete":
-            return Response(headers={"HX-Redirect": f"/run/{run.id}"})
 
         if run.status == "complete":
             return Response(headers={"HX-Redirect": f"/run/{run.id}"})
