@@ -1,5 +1,6 @@
 import base64
 import traceback
+from datetime import datetime, timedelta
 from pathlib import Path
 from urllib.parse import urlparse
 
@@ -32,6 +33,25 @@ app.mount(
     StaticFiles(directory="runtime"),
     name="runtime",
 )
+
+
+def cleanup_old_screenshots():
+    screenshots_dir = Path("runtime/screenshots")
+
+    if not screenshots_dir.exists():
+        return
+
+    cutoff_time = datetime.now() - timedelta(days=7)
+
+    for screenshot in screenshots_dir.iterdir():
+        if screenshot.is_file():
+            modified_time = datetime.fromtimestamp(screenshot.stat().st_mtime)
+
+            if modified_time < cutoff_time:
+                screenshot.unlink()
+
+
+cleanup_old_screenshots()
 
 
 def build_final_report(
@@ -670,7 +690,7 @@ def get_run(run_id: int, request: Request):
         name="dashboard.html",
         context={
             "request": request,
-            "run" : run,
+            "run": run,
             "url": run.url,
             "screenshots": run.screenshots,
             "report": run.report,
