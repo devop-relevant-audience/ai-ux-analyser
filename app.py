@@ -1,5 +1,6 @@
 import base64
 import traceback
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timedelta
 from pathlib import Path
 from urllib.parse import urlparse
@@ -214,11 +215,17 @@ def run_batch_analysis(batch_id: int):
 
         run_data = [(run.id, run.url) for run in runs]
 
-    for run_id, url in run_data:
-        try:
-            run_analysis(run_id, url)
-        except Exception:
-            pass
+    with ThreadPoolExecutor(max_workers=2) as executor:
+        futures = [
+            executor.submit(run_analysis, run_id, url)
+            for run_id, url in run_data
+        ]
+        
+        for future in as_completed(futures):
+            try:
+                future.result()
+            except Exception:
+                pass
 
     with Session(engine) as session:
         batch = session.get(Batch, batch_id)
