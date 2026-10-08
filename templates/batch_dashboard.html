@@ -51,6 +51,17 @@ is_htmx %}
       </div>
 
       <main class="dashboard-page">
+        {% if run.status == "error" %}
+
+        <div class="dashboard-panel">
+          <p class="dashboard-section-label">ANALYSIS FAILED</p>
+
+          <p>We were unable to analyse this webpage.</p>
+
+          <a href="/analyse" class="analyse-retry-button">TRY AGAIN</a>
+        </div>
+
+        {% else %}
         <div>
           <p class="dashboard-intro-eyebrow">UX EVALUATION</p>
           <h1 class="dashboard-intro-title">Webpage Dashboard</h1>
@@ -533,6 +544,7 @@ is_htmx %}
             </a>
           </section>
         </div>
+        {% endif %}
       </main>
     </div>
 
