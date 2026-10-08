@@ -49,6 +49,28 @@ def scroll_page(page):
         last_scroll = current_scroll
 
 
+def detect_access_block(page):
+    title = page.title().strip().lower()
+    body_text = page.locator("body").inner_text(timeout=3000).strip().lower()
+
+    strong_phrases = [
+        "verify you are human",
+        "please verify you are human",
+        "are you human",
+        "i am not a robot",
+        "checking your browser",
+        "security check",
+        "human verification",
+        "captcha",
+    ]
+
+    for phrase in strong_phrases:
+        if phrase in title or phrase in body_text:
+            return True
+
+    return False
+
+
 def capture_screenshots(url: str, run_id: int):
     screenshot_dir = Path("runtime/screenshots") / str(run_id)
     screenshot_dir.mkdir(parents=True, exist_ok=True)
@@ -78,8 +100,12 @@ def capture_screenshots(url: str, run_id: int):
             )
 
             response = page.goto(url, wait_until="domcontentloaded")
+
             if response and response.status >= 400:
                 raise Exception(f"Unable to access webpage (HTTP {response.status}).")
+
+            if detect_access_block(page):
+                raise Exception("Unable to access webpage.")
 
             if page_title is None:
                 page_title = page.title()
