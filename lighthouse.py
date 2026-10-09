@@ -1,8 +1,8 @@
 import json
 import platform
 import subprocess
-from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor
+from pathlib import Path
 
 
 def load_report(report_path):
