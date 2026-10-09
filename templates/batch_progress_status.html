@@ -1,0 +1,13 @@
+<div
+  id="batch-progress"
+  hx-get="/analyse/batch/{{ batch_id }}/status"
+  hx-trigger="every 2s"
+  hx-target="#batch-progress"
+  hx-swap="outerHTML"
+>
+  <p>{{ completed }} of {{ total }} analyses completed</p>
+
+  <div class="analyse-progress-bar">
+    <div class="analyse-progress-fill" style="width: {{ progress }}%"></div>
+  </div>
+</div>

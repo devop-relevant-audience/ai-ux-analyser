@@ -1,0 +1,97 @@
+<div class="history-run-details">
+  <button
+    type="button"
+    class="history-run-close"
+    aria-label="Close run details"
+    onclick="
+      document.querySelector('#history-details').classList.remove('is-open');
+      document.body.classList.remove('history-modal-open');
+    "
+  >
+    ×
+  </button>
+
+  <div class="history-run-details-header">
+    <div>
+      <p class="history-eyebrow">PAST ANALYSIS</p>
+
+      <h2>{{ page_name }}</h2>
+
+      <p class="history-run-url">{{ run.url }}</p>
+
+      <div class="history-run-meta">
+        <p class="history-run-id">Run #{{ run.id }}</p>
+
+        <p class="history-run-date">
+          {{ run.timestamp.strftime("%d %b %Y · %I:%M %p") }}
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="history-score-summary">
+    <div class="history-overall-score">
+      <span class="history-score-label"> Overall UX Score </span>
+
+      <strong> {{ "%.1f"|format(run.report.ai.overall_score) }} </strong>
+
+      <span class="history-score-out-of"> / 5 </span>
+    </div>
+
+    <div class="history-dimension-scores">
+      <div class="history-dimension">
+        <span>Visual Hierarchy</span>
+        <strong>
+          {{ run.report.ai.dimensions.visual_hierarchy.score }}/5
+        </strong>
+      </div>
+
+      <div class="history-dimension">
+        <span>Navigation</span>
+        <strong> {{ run.report.ai.dimensions.navigation.score }}/5 </strong>
+      </div>
+
+      <div class="history-dimension">
+        <span>Aesthetic Design</span>
+        <strong>
+          {{ run.report.ai.dimensions.aesthetic_design.score }}/5
+        </strong>
+      </div>
+
+      <div class="history-dimension">
+        <span>Consistency & Standards</span>
+        <strong>
+          {{ run.report.ai.dimensions.consistency_and_standards.score }}/5
+        </strong>
+      </div>
+
+      <div class="history-dimension">
+        <span>Clarity & Familiarity</span>
+        <strong>
+          {{ run.report.ai.dimensions.clarity_and_familiarity.score }}/5
+        </strong>
+      </div>
+
+      <div class="history-dimension">
+        <span>Accessibility</span>
+        <strong> {{ run.report.ai.dimensions.accessibility.score }}/5 </strong>
+      </div>
+
+      <div class="history-dimension">
+        <span>Performance</span>
+        <strong> {{ run.report.ai.dimensions.performance.score }}/5 </strong>
+      </div>
+    </div>
+  </div>
+
+  <div class="history-run-actions">
+    <a href="/history" class="history-compare-button"> Compare </a>
+
+    <a
+      href="/report/{{ run.id }}?from_history=true"
+      class="history-full-report"
+    >
+      View Full Report →
+    </a>
+  </div>
+</div>
