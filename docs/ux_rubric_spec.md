@@ -933,9 +933,16 @@ Performance scoring should consider the Lighthouse Performance score and the rep
 
 Evaluate the supplied Lighthouse performance evidence separately for the tested mobile and desktop configurations. Performance findings should not be interpreted as direct measurements of tablet performance.
 
+**Repeated Lighthouse Runs**
+Five Lighthouse runs are performed for each tested configuration: mobile and desktop. The median Performance Score from the five runs must be used as the representative Lighthouse Performance Score for that configuration.
+
+The lowest, median, and highest scores describe the variation between runs. The median must be used as the primary Performance Score when determining the Performance dimension rating. The lowest and highest scores may be used to understand score variability but must not replace the median as the representative score.
+
+The evaluator must use the supplied median scores and must not calculate or estimate them independently.
+
 Evaluate the following characteristics using the supplied Lighthouse performance evidence:
 
-- **Lighthouse Performance score**
+- **Median Performance Score**
   - Good: 90–100
   - Needs Improvement: 50–89
   - Poor: 0–49

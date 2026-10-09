@@ -3,8 +3,15 @@ from pydantic import BaseModel, Field
 from visual_schema import VisualObservations
 
 
+class PerformanceScoreSummary(BaseModel):
+    lowest: int = Field(ge=0, le=100)
+    median: int = Field(ge=0, le=100)
+    highest: int = Field(ge=0, le=100)
+
+
 class LighthouseMetrics(BaseModel):
     performance_score: int = Field(ge=0, le=100)
+    performance_score_summary: PerformanceScoreSummary
     fcp: float
     lcp: float
     speed_index: float
@@ -61,6 +68,6 @@ class PerformanceEvaluation(BaseModel):
     score: int = Field(ge=1, le=5)
     summary: str
     lighthouse_summary: LighthouseSummary
-    considerations: list[str] = Field(default_factory=list, max_length=2)
+    considerations: list[str] = Field(default_factory=list, max_length=3)
     strengths: list[str] = Field(default_factory=list, max_length=2)
     issues: list[str] = Field(default_factory=list, max_length=2)

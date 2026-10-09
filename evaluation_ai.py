@@ -284,6 +284,12 @@ Incomplete and inapplicable counts are provided for transparency and reporting c
 - Lighthouse metrics that are better than the "Poor" threshold do not automatically constitute strengths.
 Only describe a Lighthouse metric as a strength when it falls within the "Good" threshold defined in the rubric.
 - Lighthouse metrics that fall under the 'Poor' threshold is considered an issue. 
+- Include the median Lighthouse Performance Score for both mobile and desktop in the Performance dimension's considerations when the score summaries are available.
+- Use the supplied median values exactly. Do not calculate or estimate them.
+- Present these scores as a concise, neutral statement, separate from the individual Lighthouse metrics and any strengths or issues.
+- Evaluate individual Lighthouse metrics using their supplied values and the UX rubric thresholds.
+- Do not use the lowest or highest scores as substitutes for the median.
+- Include exactly one consideration reporting both median scores.
 
 # 9. Objective Result Summaries
 
@@ -324,6 +330,12 @@ Considerations are optional pieces of notable, neutral information that are rele
 - Do not manufacture considerations to reach the maximum of three.
 - When screenshot integrity issues are reported, acknowledge them in the evaluation only when they materially affect the reliability or interpretation of the visual evidence.
 - Do not treat screenshot integrity issues as UX weaknesses or use them to reduce a dimension score.
+- Considerations must provide concise, neutral contextual information that is relevant to the evaluated dimension.
+- Do not reproduce or summarise the full Lighthouse metrics for mobile and desktop in the considerations.
+- Do not include Performance Scores, FCP, LCP, Speed Index, TBT, or CLS values as a standalone metrics summary in considerations.
+- Lighthouse metrics must be reported in the Performance dimension's `lighthouse_summary` field, not repeated in considerations.
+- Do not use considerations to duplicate information already adequately covered by strengths, issues, or the dimension summary.
+- If there is no additional relevant contextual information to report, return an empty list rather than repeating existing evidence.
 
 Example of characteristics worth mentioning as a consideration: 
 1. "The hero artwork is visually prominent alongside the primary hero headline."

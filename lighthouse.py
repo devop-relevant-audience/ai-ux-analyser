@@ -1,7 +1,11 @@
 import json
 import platform
+import statistics
 import subprocess
-from concurrent.futures import ThreadPoolExecutor
+import tempfile
+import time
+
+# from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 
@@ -50,12 +54,64 @@ def run_lighthouse_command(command):
                 raise
 
 
-def run_timed_lighthouse_command(command, label):
-    import time
+def run_lighthouse_repeatedly(command, output_path, label):
+    def run_single(run_number):
+        with tempfile.NamedTemporaryFile(
+            suffix=".json",
+            delete=False,
+            dir=output_path.parent,
+        ) as report_file:
+            temporary_path = Path(report_file.name)
 
-    start = time.perf_counter()
-    run_lighthouse_command(command)
-    print(f"Lighthouse {label}: {time.perf_counter() - start:.2f}s")
+        run_command = command.copy()
+
+        output_index = next(
+            index
+            for index, argument in enumerate(run_command)
+            if argument.startswith("--output-path=")
+        )
+
+        run_command[output_index] = f"--output-path={temporary_path}"
+
+        start = time.perf_counter()
+
+        try:
+            run_lighthouse_command(run_command)
+            report = load_report(temporary_path)
+
+            score = round(report["categories"]["performance"]["score"] * 100)
+
+            print(
+                f"Lighthouse {label} run {run_number}: "
+                f"{time.perf_counter() - start:.2f}s "
+                f"(score: {score})"
+            )
+
+            return report, score, parse_report(report)
+
+        finally:
+            temporary_path.unlink(missing_ok=True)
+
+    results = [run_single(run_number) for run_number in range(1, 6)]
+
+    scores = [result[1] for result in results]
+
+    with open(output_path, "w", encoding="utf-8") as file:
+        json.dump(results[0][0], file)
+
+    score_summary = {
+        "lowest": min(scores),
+        "median": statistics.median(scores),
+        "highest": max(scores),
+    }
+
+    parsed_results = results[0][2]
+    parsed_results["performance_score"] = score_summary["median"]
+
+    print(f"Lighthouse {label} scores: {scores}")
+    print(f"Lighthouse {label} score summary: {score_summary}")
+
+    return score_summary, parsed_results
 
 
 def run_lighthouse(url):
@@ -90,22 +146,20 @@ def run_lighthouse(url):
         "--only-categories=performance",
     ]
 
-    with ThreadPoolExecutor(max_workers=2) as executor:
-        mobile_future = executor.submit(
-            run_timed_lighthouse_command, mobile_command, "mobile"
-        )
-        desktop_future = executor.submit(
-            run_timed_lighthouse_command, desktop_command, "desktop"
-        )
+    mobile_score_summary, mobile_results = run_lighthouse_repeatedly(
+        mobile_command,
+        mobile_output_path,
+        "mobile",
+    )
 
-        mobile_future.result()
-        desktop_future.result()
+    desktop_score_summary, desktop_results = run_lighthouse_repeatedly(
+        desktop_command,
+        desktop_output_path,
+        "desktop",
+    )
 
-    mobile_report = load_report(mobile_output_path)
-    mobile_results = parse_report(mobile_report)
-
-    desktop_report = load_report(desktop_output_path)
-    desktop_results = parse_report(desktop_report)
+    mobile_results["performance_score_summary"] = mobile_score_summary
+    desktop_results["performance_score_summary"] = desktop_score_summary
 
     return {
         "mobile": mobile_results,

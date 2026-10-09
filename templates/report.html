@@ -581,8 +581,18 @@
 
             <div class="report-lighthouse-metrics">
               <p>
-                <strong>Performance Score:</strong>
-                {{ report.lighthouse.mobile.performance_score }}
+                <strong>Lowest Performance Score:</strong>
+                {{ report.lighthouse.mobile.performance_score_summary.lowest }}
+              </p>
+
+              <p>
+                <strong>Median Performance Score:</strong>
+                {{ report.lighthouse.mobile.performance_score_summary.median }}
+              </p>
+
+              <p>
+                <strong>Highest Performance Score:</strong>
+                {{ report.lighthouse.mobile.performance_score_summary.highest }}
               </p>
 
               <p>
@@ -617,8 +627,17 @@
 
             <div class="report-lighthouse-metrics">
               <p>
-                <strong>Performance Score:</strong>
-                {{ report.lighthouse.desktop.performance_score }}
+                <strong>Lowest Performance Score:</strong>
+                {{ report.lighthouse.desktop.performance_score_summary.lowest }}
+              </p>
+              <p>
+                <strong>Median Performance Score:</strong>
+                {{ report.lighthouse.desktop.performance_score_summary.median }}
+              </p>
+              <p>
+                <strong>Highest Performance Score:</strong>
+                {{ report.lighthouse.desktop.performance_score_summary.highest
+                }}
               </p>
 
               <p>

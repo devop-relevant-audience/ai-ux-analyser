@@ -99,7 +99,7 @@ def capture_screenshots(url: str, run_id: int):
                 }
             )
 
-            response = page.goto(url, wait_until="domcontentloaded")
+            response = page.goto(url, wait_until="domcontentloaded", timeout=60000,)
 
             if response and response.status >= 400:
                 raise Exception(f"Unable to access webpage (HTTP {response.status}).")
