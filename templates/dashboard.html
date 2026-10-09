@@ -472,7 +472,7 @@
           <p class="dashboard-section-label">PRIORITISED RECOMMENDATIONS</p>
 
           <div class="dashboard-recommendations-list">
-            {% for recommendation in report.ai.overall.recommendations %}
+            {% for recommendation in report.ai.overall.recommendations[:3] %}
 
             <div class="dashboard-recommendation-row">
               <div class="dashboard-recommendation-priority">
